@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function ONGDashboardScreen({ navigation }) {
   return (
@@ -32,37 +33,37 @@ export default function ONGDashboardScreen({ navigation }) {
         <Text style={styles.sectionTitle}>Animais</Text>
         
         {[
-          { nome: 'Bolinha', status: '3 padrinhos • último post há 1 dia', img: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=100' },
-          { nome: 'Tieta', status: '2 padrinhos • último post há 2 dias', img: 'https://images.unsplash.com/photo-1495360010541-f48722b34f7d?q=80&w=100' },
-          { nome: 'Pirata', status: '0 padrinhos • último post há 4 dias', img: 'https://images.unsplash.com/photo-1537151608804-ea2f1d73f73e?q=80&w=100' },
-          { nome: 'Zeca', status: '1 padrinho • último post há 10 dias', img: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=100' },
+          { nome: 'Bolinha', status: '3 padrinhos • último post há 1 dia', img: require('../assets/images/bolinha-card.jpg') },
+          { nome: 'Tieta', status: '2 padrinhos • último post há 2 dias', img: require('../assets/images/tieta.jpg') },
+          { nome: 'Pirata', status: '0 padrinhos • último post há 4 dias', img: require('../assets/images/pirata.jpg') },
+          { nome: 'Zeca', status: '1 padrinho • último post há 10 dias', img: require('../assets/images/zeca.jpg') },
         ].map((animal, index) => (
           // Linkado para a página de animal da ONG
           <TouchableOpacity key={index} style={styles.animalItem} onPress={() => navigation.navigate('ONGAnimal')}>
-            <Image source={{ uri: animal.img }} style={styles.animalImg} />
+            <Image source={animal.img} style={styles.animalImg} />
             <View style={styles.animalInfo}>
               <Text style={styles.animalName}>{animal.nome}</Text>
               <Text style={styles.animalStatus}>{animal.status}</Text>
             </View>
-            <Text style={styles.chevron}>›</Text>
+            <Ionicons name="chevron-forward" size={20} color="#ccc" style={styles.chevron} />
           </TouchableOpacity>
         ))}
       </ScrollView>
 
       <View style={styles.footer}>
         <TouchableOpacity style={styles.footerTab}>
-          <Text style={styles.footerIcon}>㗊</Text>
+          <Ionicons name="grid-outline" size={20} color="#E67E22" style={styles.footerIconActive} />
           <Text style={styles.footerTextActive}>Painel</Text>
         </TouchableOpacity>
         
         {/* Aba central linkada para Novo Post */}
         <TouchableOpacity style={styles.footerTab} onPress={() => navigation.navigate('ONGNewPost')}>
-          <Text style={styles.footerIcon}>⊕</Text>
+          <Ionicons name="add-circle-outline" size={20} color="#666" style={styles.footerIcon} />
           <Text style={styles.footerText}>Novo post</Text>
         </TouchableOpacity>
         
         <TouchableOpacity style={styles.footerTab} onPress={() => navigation.goBack()}>
-          <Text style={styles.footerIcon}>↪</Text>
+          <Ionicons name="log-out-outline" size={20} color="#666" style={styles.footerIcon} />
           <Text style={styles.footerText}>Modo padrinho</Text>
         </TouchableOpacity>
       </View>
@@ -95,6 +96,7 @@ const styles = StyleSheet.create({
   footer: { flexDirection: 'row', borderTopWidth: 1, borderTopColor: '#eee', paddingVertical: 12, backgroundColor: '#fff' },
   footerTab: { flex: 1, alignItems: 'center' },
   footerIcon: { fontSize: 20, marginBottom: 4, color: '#666' },
+  footerIconActive: { fontSize: 20, marginBottom: 4, color: '#E67E22' },
   footerText: { fontSize: 10, color: '#666' },
   footerTextActive: { fontSize: 10, color: '#E67E22', fontWeight: 'bold' }
 });

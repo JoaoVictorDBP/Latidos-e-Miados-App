@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Image, ScrollView } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function ManageSponsorshipScreen({ navigation }) {
   const [valor, setValor] = useState('50');
@@ -9,9 +10,9 @@ export default function ManageSponsorshipScreen({ navigation }) {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.backText}>←</Text>
+          <Ionicons name="arrow-back" size={24} color="#333" style={styles.backText} />
         </TouchableOpacity>
-        <Image source={{ uri: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=100' }} style={styles.avatar} />
+        <Image source={require('../assets/images/bolinha-card.jpg')} style={styles.avatar} />
         <Text style={styles.title}>Bolinha</Text>
       </View>
       

@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function UserProfileScreen({ navigation }) {
   return (
@@ -17,37 +18,37 @@ export default function UserProfileScreen({ navigation }) {
         <TouchableOpacity style={styles.listItem} onPress={() => navigation.navigate('ManageSponsorship')}>
           <Text style={styles.itemTitle}>Bolinha • R$ 50,00/mês</Text>
           <Text style={styles.itemSubtitle}>próxima cobrança: 03/12/2026</Text>
-          <Text style={styles.chevron}>›</Text>
+          <Ionicons name="chevron-forward" size={20} color="#ccc" style={styles.chevron} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.listItem}>
           <Text style={styles.itemTitle}>Tieta • R$ 20,00/mês</Text>
           <Text style={styles.itemSubtitle}>próxima cobrança: 03/12/2026</Text>
-          <Text style={styles.chevron}>›</Text>
+          <Ionicons name="chevron-forward" size={20} color="#ccc" style={styles.chevron} />
         </TouchableOpacity>
 
         <Text style={styles.sectionTitle}>Mais</Text>
         <TouchableOpacity style={styles.listItemMenu} onPress={() => navigation.navigate('Certificates')}>
           <Text>📜 Meus certificados</Text>
-          <Text style={styles.chevron}>›</Text>
+          <Ionicons name="chevron-forward" size={20} color="#ccc" style={styles.chevron} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.listItemMenu} onPress={() => navigation.navigate('ScheduleVisit')}>
           <Text>📅 Agendar visita</Text>
-          <Text style={styles.chevron}>›</Text>
+          <Ionicons name="chevron-forward" size={20} color="#ccc" style={styles.chevron} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.listItemMenu} onPress={() => navigation.navigate('Notifications')}>
           <Text>🔔 Notificações</Text>
-          <Text style={styles.chevron}>›</Text>
+          <Ionicons name="chevron-forward" size={20} color="#ccc" style={styles.chevron} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.listItemMenu} onPress={() => navigation.navigate('ONGDashboard')}>
           <Text>⚙️ Modo ONG (equipe)</Text>
-          <Text style={styles.chevron}>›</Text>
+          <Ionicons name="chevron-forward" size={20} color="#ccc" style={styles.chevron} />
         </TouchableOpacity>
 
         <Text style={styles.sectionTitle}>Conta</Text>
         {/* Adicionado o redirecionamento para a tela inicial de Welcome */}
         <TouchableOpacity style={styles.listItemMenu} onPress={() => navigation.navigate('Welcome')}>
-          <Text style={styles.logoutText}>Sair</Text>
-          <Text style={styles.chevron}>›</Text>
+          <Text style={styles.logoutText}>↩️ Sair</Text>
+          <Ionicons name="chevron-forward" size={20} color="#ccc" style={styles.chevron} />
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -66,7 +67,7 @@ const styles = StyleSheet.create({
   listItem: { borderWidth: 1, borderColor: '#eee', borderRadius: 12, padding: 16, marginBottom: 12, position: 'relative' },
   itemTitle: { fontSize: 16, fontWeight: 'bold', color: '#333' },
   itemSubtitle: { fontSize: 12, color: '#666', marginTop: 4 },
-  chevron: { position: 'absolute', right: 16, top: '50%', fontSize: 20, color: '#ccc' },
+  chevron: { position: 'absolute', right: 16, top: '50%', marginTop: -10, fontSize: 20, color: '#ccc' },
   listItemMenu: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: '#eee' },
   logoutText: { color: 'red' }
 });

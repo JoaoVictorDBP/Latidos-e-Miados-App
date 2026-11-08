@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Image } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function PaymentScreen({ navigation }) {
   const [pagamento, setPagamento] = useState('pix');
@@ -8,13 +9,13 @@ export default function PaymentScreen({ navigation }) {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.backText}>←</Text>
+          <Ionicons name="arrow-back" size={24} color="#333" style={styles.backText} />
         </TouchableOpacity>
         <Text style={styles.title}>Pagamento</Text>
       </View>
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.summaryCard}>
-          <Image source={{ uri: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=100' }} style={styles.avatar} />
+          <Image source={require('../assets/images/bolinha-card.jpg')} style={styles.avatar} />
           <View>
             <Text style={styles.summaryTitle}>Bolinha</Text>
             <Text style={styles.summarySubtitle}>R$ 50,00 por mês</Text>
@@ -44,6 +45,8 @@ export default function PaymentScreen({ navigation }) {
         ))}
         
         <Text style={styles.infoText}>Você pode alterar, pausar ou cancelar quando quiser, no seu perfil.</Text>
+        <Text style={styles.processedBy}>Pagamento processado por</Text>
+        <Image source={require('../assets/images/mercadopago.png')} style={styles.processor} accessibilityLabel="Mercado Pago" />
       </ScrollView>
       <View style={styles.footer}>
         <TouchableOpacity style={styles.primaryButton} onPress={() => navigation.navigate('Confirmation')}>
@@ -73,6 +76,8 @@ const styles = StyleSheet.create({
   paymentTitle: { fontSize: 16, fontWeight: 'bold' },
   paymentSubtitle: { fontSize: 12, color: '#666', marginTop: 4, paddingRight: 32 },
   infoText: { fontSize: 12, color: '#666', textAlign: 'center', marginTop: 16 },
+  processedBy: { fontSize: 12, color: '#666', textAlign: 'center', marginTop: 16 },
+  processor: { width: 169, height: 32, alignSelf: 'center', marginTop: 8, resizeMode: 'contain' },
   footer: { padding: 24 },
   primaryButton: { backgroundColor: '#E67E22', paddingVertical: 16, borderRadius: 30, alignItems: 'center' },
   primaryButtonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' }

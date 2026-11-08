@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 const VALORES = [
   { id: '10', valor: 'R$ 10,00', desc: 'cobre um vermífugo' },
@@ -16,7 +17,7 @@ export default function DonationValueScreen({ navigation }) {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.backText}>←</Text>
+          <Ionicons name="arrow-back" size={24} color="#333" style={styles.backText} />
         </TouchableOpacity>
       </View>
 

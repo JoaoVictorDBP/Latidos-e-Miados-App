@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function ONGAnimalScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}><Text style={styles.backText}>←</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.goBack()}><Ionicons name="arrow-back" size={24} color="#333" style={styles.backText} /></TouchableOpacity>
         <Text style={styles.title}>Zeca</Text>
         <TouchableOpacity><Text style={styles.editText}>Editar</Text></TouchableOpacity>
       </View>
@@ -14,12 +15,12 @@ export default function ONGAnimalScreen({ navigation }) {
 
         <View style={styles.post}>
           <View style={styles.postHeader}>
-            <Image source={{ uri: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=100' }} style={styles.avatar} />
+            <Image source={require('../assets/images/zeca.jpg')} style={styles.avatar} />
             <Text style={styles.postAuthor}>Zeca</Text>
             <Text style={styles.badge}>Dia a dia</Text>
             <Text style={styles.date}>24/10/2026</Text>
           </View>
-          <Image source={{ uri: 'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?q=80&w=400' }} style={styles.postImage} />
+          <Image source={require('../assets/images/post-zeca.jpg')} style={styles.postImage} />
           <Text style={styles.postText}>Dormiu a tarde inteira em cima do saco de ração 😴</Text>
           <Text style={styles.comments}>💬 0 comentários</Text>
         </View>

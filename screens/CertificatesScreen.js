@@ -1,18 +1,19 @@
 import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Image } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function CertificatesScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}><Text style={styles.backText}>←</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.goBack()}><Ionicons name="arrow-back" size={24} color="#333" style={styles.backText} /></TouchableOpacity>
         <Text style={styles.title}>Meus certificados</Text>
       </View>
       <ScrollView contentContainerStyle={styles.content}>
         
         <View style={styles.certificate}>
           <Text style={styles.certHeader}>CERTIFICADO DE APADRINHAMENTO</Text>
-          <Image source={{ uri: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=200' }} style={styles.certImage} />
+          <Image source={require('../assets/images/bolinha-card.jpg')} style={styles.certImage} />
           <Text style={styles.certNames}>Daniel ♡ Bolinha</Text>
           <Text style={styles.certDate}>desde 03/11/2026</Text>
           <TouchableOpacity style={styles.shareButton}><Text style={styles.shareText}>Compartilhar 🔗</Text></TouchableOpacity>
@@ -20,7 +21,7 @@ export default function CertificatesScreen({ navigation }) {
 
         <View style={styles.certificate}>
           <Text style={styles.certHeader}>CERTIFICADO DE APADRINHAMENTO</Text>
-          <Image source={{ uri: 'https://images.unsplash.com/photo-1495360010541-f48722b34f7d?q=80&w=200' }} style={styles.certImage} />
+          <Image source={require('../assets/images/tieta.jpg')} style={styles.certImage} />
           <Text style={styles.certNames}>Daniel ♡ Tieta</Text>
           <Text style={styles.certDate}>desde 03/11/2026</Text>
           <TouchableOpacity style={styles.shareButton}><Text style={styles.shareText}>Compartilhar 🔗</Text></TouchableOpacity>

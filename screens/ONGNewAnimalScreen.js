@@ -1,11 +1,12 @@
 import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function ONGNewAnimalScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}><Text style={styles.backText}>←</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.goBack()}><Ionicons name="arrow-back" size={24} color="#333" style={styles.backText} /></TouchableOpacity>
         <Text style={styles.title}>Novo animal</Text>
       </View>
       <ScrollView contentContainerStyle={styles.content}>
@@ -19,7 +20,7 @@ export default function ONGNewAnimalScreen({ navigation }) {
         <TextInput style={styles.input} />
 
         <Text style={styles.label}>Espécie *</Text>
-        <View style={styles.dropdown}><Text>Cachorro</Text><Text>⌵</Text></View>
+        <View style={styles.dropdown}><Text>Cachorro</Text><Ionicons name="chevron-down" size={16} color="#666" /></View>
 
         <Text style={styles.label}>Idade *</Text>
         <TextInput style={styles.input} placeholder="ex.: 3 anos" />

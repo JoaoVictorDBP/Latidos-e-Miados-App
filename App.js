@@ -2,7 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Text } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 import WelcomeScreen from './screens/WelcomeScreen';
 import LoginScreen from './screens/LoginScreen';
@@ -33,10 +33,10 @@ const Tab = createBottomTabNavigator();
 function MainTabs() {
   return (
     <Tab.Navigator screenOptions={{ headerShown: false, tabBarActiveTintColor: '#E67E22', tabBarInactiveTintColor: '#999' }}>
-      <Tab.Screen name="Inicio" component={HomeScreen} options={{ tabBarLabel: 'Início', tabBarIcon: () => <Text>🏠</Text> }} />
-      <Tab.Screen name="MeusAfilhados" component={FeedScreen} options={{ tabBarLabel: 'Meus afilhados', tabBarIcon: () => <Text>🐾</Text> }} />
-      <Tab.Screen name="Transparencia" component={TransparenciaScreen} options={{ tabBarLabel: 'Transparência', tabBarIcon: () => <Text>👁️</Text> }} />
-      <Tab.Screen name="PerfilTab" component={UserProfileScreen} options={{ tabBarLabel: 'Perfil', tabBarIcon: () => <Text>👤</Text> }} />
+      <Tab.Screen name="Inicio" component={HomeScreen} options={{ tabBarLabel: 'Início', tabBarIcon: ({ color, size }) => <Ionicons name="home-outline" color={color} size={size} /> }} />
+      <Tab.Screen name="MeusAfilhados" component={FeedScreen} options={{ tabBarLabel: 'Meus afilhados', tabBarIcon: ({ color, size }) => <Ionicons name="heart-outline" color={color} size={size} /> }} />
+      <Tab.Screen name="Transparencia" component={TransparenciaScreen} options={{ tabBarLabel: 'Transparência', tabBarIcon: ({ color, size }) => <Ionicons name="eye-outline" color={color} size={size} /> }} />
+      <Tab.Screen name="PerfilTab" component={UserProfileScreen} options={{ tabBarLabel: 'Perfil', tabBarIcon: ({ color, size }) => <Ionicons name="person-outline" color={color} size={size} /> }} />
     </Tab.Navigator>
   );
 }

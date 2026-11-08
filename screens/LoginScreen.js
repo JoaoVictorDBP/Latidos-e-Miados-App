@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, SafeAreaView, Image } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  const [senhaVisivel, setSenhaVisivel] = useState(false);
 
   return (
     <SafeAreaView style={styles.container}>
       <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-        <Text style={styles.backText}>←</Text>
+        <Ionicons name="arrow-back" size={24} color="#333" style={styles.backText} />
       </TouchableOpacity>
 
       <Text style={styles.title}>Bem-vindo de volta!</Text>
@@ -24,12 +26,17 @@ export default function LoginScreen({ navigation }) {
         />
 
         <Text style={styles.label}>Senha</Text>
-        <TextInput 
-          style={styles.input} 
-          value={senha}
-          onChangeText={setSenha}
-          secureTextEntry
-        />
+        <View>
+          <TextInput
+            style={[styles.input, styles.passwordInput]}
+            value={senha}
+            onChangeText={setSenha}
+            secureTextEntry={!senhaVisivel}
+          />
+          <TouchableOpacity style={styles.eyeButton} onPress={() => setSenhaVisivel(!senhaVisivel)} accessibilityLabel={senhaVisivel ? 'Ocultar senha' : 'Mostrar senha'}>
+            <Ionicons name={senhaVisivel ? 'eye-off-outline' : 'eye-outline'} size={20} color="#666" />
+          </TouchableOpacity>
+        </View>
 
         <TouchableOpacity 
           style={styles.primaryButton}
@@ -41,6 +48,7 @@ export default function LoginScreen({ navigation }) {
         <Text style={styles.orText}>ou</Text>
 
         <TouchableOpacity style={styles.googleButton}>
+          <Image source={require('../assets/images/google.png')} style={styles.googleIcon} />
           <Text style={styles.googleButtonText}>Prosseguir com Google</Text>
         </TouchableOpacity>
 
@@ -64,7 +72,10 @@ const styles = StyleSheet.create({
   primaryButton: { backgroundColor: '#E67E22', paddingVertical: 16, borderRadius: 30, alignItems: 'center', marginBottom: 24 },
   primaryButtonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' },
   orText: { textAlign: 'center', color: '#666', marginBottom: 24 },
-  googleButton: { borderWidth: 1, borderColor: '#ccc', paddingVertical: 16, borderRadius: 30, alignItems: 'center', marginBottom: 24 },
+  googleButton: { borderWidth: 1, borderColor: '#ccc', paddingVertical: 16, borderRadius: 30, flexDirection: 'row', justifyContent: 'center', alignItems: 'center', marginBottom: 24 },
+  googleIcon: { width: 20, height: 20, marginRight: 10 },
+  passwordInput: { paddingRight: 32 },
+  eyeButton: { position: 'absolute', right: 0, top: 6, padding: 4 },
   googleButtonText: { color: '#333', fontSize: 16, fontWeight: '600' },
   forgotPassword: { alignItems: 'center' },
   forgotText: { color: '#666', fontSize: 14 }
