@@ -19,7 +19,7 @@ export default function ConfirmationScreen({ navigation }) {
         <View style={styles.certificate}>
           <Text style={styles.certHeader}>CERTIFICADO DE APADRINHAMENTO</Text>
           <Image 
-            source={{ uri: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=200&auto=format&fit=crop' }} 
+            source={require('../assets/images/bolinha-card.jpg')} 
             style={styles.certImage} 
           />
           <Text style={styles.certNames}>Daniel ♡ Bolinha</Text>

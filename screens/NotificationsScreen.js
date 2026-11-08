@@ -1,13 +1,14 @@
 import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function NotificationsScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}><Text style={styles.backText}>←</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.goBack()}><Ionicons name="arrow-back" size={24} color="#333" style={styles.backText} /></TouchableOpacity>
         <Text style={styles.title}>Notificações</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('NotificationSettings')}><Text style={styles.settingsIcon}>⚙️</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('NotificationSettings')}><Ionicons name="settings-outline" size={24} color="#333" /></TouchableOpacity>
       </View>
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.dateLabel}>Hoje</Text>
@@ -34,7 +35,6 @@ const styles = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 16, marginTop: 10, borderBottomWidth: 1, borderBottomColor: '#eee' },
   backText: { fontSize: 24 },
   title: { fontSize: 20, fontWeight: 'bold' },
-  settingsIcon: { fontSize: 24 },
   content: { padding: 16 },
   dateLabel: { fontSize: 14, color: '#666', marginTop: 16, marginBottom: 8 },
   notificationCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF5EB', padding: 16, borderRadius: 12, marginBottom: 12 },

@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function AnimalProfileScreen({ navigation }) {
   return (
@@ -7,11 +8,11 @@ export default function AnimalProfileScreen({ navigation }) {
       <ScrollView>
         <View style={styles.imageContainer}>
           <Image 
-            source={{ uri: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=600&auto=format&fit=crop' }} 
+            source={require('../assets/images/bolinha.jpg')} 
             style={styles.image} 
           />
           <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-            <Text style={styles.backText}>←</Text>
+            <Ionicons name="arrow-back" size={24} color="#333" style={styles.backText} />
           </TouchableOpacity>
         </View>
 

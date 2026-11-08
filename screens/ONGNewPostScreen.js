@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, TextInput } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function ONGNewPostScreen({ navigation }) {
   return (
@@ -7,14 +8,14 @@ export default function ONGNewPostScreen({ navigation }) {
       {/* 1. Adicionado o cabeçalho com seta de voltar */}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Text style={styles.backText}>←</Text>
+          <Ionicons name="arrow-back" size={24} color="#333" style={styles.backText} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Novo post</Text>
       </View>
 
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.label}>Pra que animal é?</Text>
-        <View style={styles.dropdown}><Text>Bolinha</Text><Text>⌵</Text></View>
+        <View style={styles.dropdown}><Text>Bolinha</Text><Ionicons name="chevron-down" size={16} color="#666" /></View>
 
         <View style={styles.mediaRow}>
           <TouchableOpacity style={styles.mediaButton}><Text>🖼️ Foto</Text></TouchableOpacity>
@@ -43,12 +44,12 @@ export default function ONGNewPostScreen({ navigation }) {
       {/* 2. Menu inferior idêntico ao do Painel para navegação */}
       <View style={styles.bottomMenu}>
         <TouchableOpacity style={styles.footerTab} onPress={() => navigation.goBack()}>
-          <Text style={styles.footerIcon}>㗊</Text>
+          <Ionicons name="grid-outline" size={20} color="#666" style={styles.footerIcon} />
           <Text style={styles.footerText}>Painel</Text>
         </TouchableOpacity>
         
         <TouchableOpacity style={styles.footerTab}>
-          <Text style={styles.footerIconActive}>⊕</Text>
+          <Ionicons name="add-circle-outline" size={20} color="#E67E22" style={styles.footerIconActive} />
           <Text style={styles.footerTextActive}>Novo post</Text>
         </TouchableOpacity>
         
@@ -56,7 +57,7 @@ export default function ONGNewPostScreen({ navigation }) {
           style={styles.footerTab} 
           onPress={() => navigation.navigate('MainTabs', { screen: 'PerfilTab' })}
         >
-          <Text style={styles.footerIcon}>↪</Text>
+          <Ionicons name="log-out-outline" size={20} color="#666" style={styles.footerIcon} />
           <Text style={styles.footerText}>Modo padrinho</Text>
         </TouchableOpacity>
       </View>

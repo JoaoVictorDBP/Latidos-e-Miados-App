@@ -1,14 +1,18 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, SafeAreaView, TextInput, ScrollView } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function PostScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <View style={styles.imageContainer}>
-          <Image source={{ uri: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=600' }} style={styles.image} />
+          <Image source={require('../assets/images/bolinha.jpg')} style={styles.image} />
+          <View style={styles.playOverlay} pointerEvents="none">
+            <View style={styles.playCircle}><Ionicons name="play" size={24} color="#fff" /></View>
+          </View>
           <TouchableOpacity style={styles.closeButton} onPress={() => navigation.goBack()}>
-            <Text style={styles.closeText}>✕</Text>
+            <Ionicons name="close" size={22} color="#fff" />
           </TouchableOpacity>
         </View>
         <View style={styles.content}>
@@ -36,8 +40,9 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
   imageContainer: { position: 'relative' },
   image: { width: '100%', height: 400, resizeMode: 'cover' },
+  playOverlay: { position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, alignItems: 'center', justifyContent: 'center' },
+  playCircle: { width: 64, height: 64, borderRadius: 32, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center' },
   closeButton: { position: 'absolute', top: 40, left: 16, backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 20, width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
-  closeText: { color: '#fff', fontSize: 20 },
   content: { padding: 24 },
   postInfo: { fontSize: 12, color: '#666', marginBottom: 8 },
   bold: { fontWeight: 'bold' },

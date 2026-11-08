@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function ScheduleVisitScreen({ navigation }) {
   const [selectedDia, setSelectedDia] = useState('08/11');
@@ -11,7 +12,7 @@ export default function ScheduleVisitScreen({ navigation }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}><Text style={styles.backText}>←</Text></TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.goBack()}><Ionicons name="arrow-back" size={24} color="#333" style={styles.backText} /></TouchableOpacity>
         <Text style={styles.title}>Agendar visita</Text>
       </View>
       <ScrollView contentContainerStyle={styles.content}>

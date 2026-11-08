@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function FeedScreen({ navigation }) {
   return (
@@ -15,17 +16,27 @@ export default function FeedScreen({ navigation }) {
       <ScrollView style={styles.feed}>
         <TouchableOpacity style={styles.post} onPress={() => navigation.navigate('Post')}>
           <View style={styles.postHeader}>
-            <Image source={{ uri: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=100' }} style={styles.avatar} />
+            <Image source={require('../assets/images/bolinha-card.jpg')} style={styles.avatar} />
             <Text style={styles.postAuthor}>Bolinha</Text>
             <Text style={styles.badge}>Saúde</Text>
             <Text style={styles.date}>02/11/2026</Text>
           </View>
-          <Image source={{ uri: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=600' }} style={styles.postImage} />
+          <Image source={require('../assets/images/post-bolinha-video.jpg')} style={styles.postImage} />
           <Text style={styles.postText}>Primeiro dia sem mancar depois do remédio novo! 🐾</Text>
           <View style={styles.postFooter}>
             <Text style={styles.comments}>💬 2 comentários</Text>
-            <Text style={styles.likeIcon}>♡</Text>
+            <Ionicons name="heart-outline" size={22} color="#E67E22" />
           </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.post} onPress={() => navigation.navigate('Post')}>
+          <View style={styles.postHeader}>
+            <Image source={require('../assets/images/bolinha-card.jpg')} style={styles.avatar} />
+            <Text style={styles.postAuthor}>Bolinha</Text>
+            <Text style={styles.badge}>Dia a dia</Text>
+            <Text style={styles.date}>29/10/2026</Text>
+          </View>
+          <Image source={require('../assets/images/post-bolinha.jpg')} style={styles.postImage} />
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -51,6 +62,5 @@ const styles = StyleSheet.create({
   postImage: { width: '100%', height: 250, borderRadius: 12, marginBottom: 12 },
   postText: { fontSize: 14, color: '#333', marginBottom: 8 },
   postFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  comments: { color: '#666', fontSize: 14 },
-  likeIcon: { fontSize: 20, color: '#E67E22' }
+  comments: { color: '#666', fontSize: 14 }
 });

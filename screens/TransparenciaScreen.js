@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function TransparenciaScreen() {
   return (
@@ -8,8 +9,8 @@ export default function TransparenciaScreen() {
         <Text style={styles.title}>Para onde vai o dinheiro</Text>
         
         <View style={styles.dateSelector}>
-          <Text style={styles.dateText}>Outubro ⌵</Text>
-          <Text style={styles.dateText}>2026 ⌵</Text>
+          <Text style={styles.dateText}>Outubro <Ionicons name="chevron-down" size={14} color="#666" /></Text>
+          <Text style={styles.dateText}>2026 <Ionicons name="chevron-down" size={14} color="#666" /></Text>
         </View>
 
         <View style={styles.summaryCards}>
@@ -32,11 +33,11 @@ export default function TransparenciaScreen() {
         </View>
 
         <Text style={styles.sectionTitle}>Documentos</Text>
-        <TouchableOpacity style={styles.listItem}><Text>📄 Notas fiscais de outubro</Text><Text style={styles.chevron}>›</Text></TouchableOpacity>
-        <TouchableOpacity style={styles.listItem}><Text>📊 Relatório anual 2025</Text><Text style={styles.chevron}>›</Text></TouchableOpacity>
+        <TouchableOpacity style={styles.listItem}><Text>📄 Notas fiscais de outubro</Text><Ionicons name="chevron-forward" size={20} color="#ccc" style={styles.chevron} /></TouchableOpacity>
+        <TouchableOpacity style={styles.listItem}><Text>📊 Relatório anual 2025</Text><Ionicons name="chevron-forward" size={20} color="#ccc" style={styles.chevron} /></TouchableOpacity>
 
         <Text style={styles.sectionTitle}>Eventos</Text>
-        <TouchableOpacity style={styles.listItem}><Text>🎪 Bazar beneficente - sáb. 08/11, 9h</Text><Text style={styles.chevron}>›</Text></TouchableOpacity>
+        <TouchableOpacity style={styles.listItem}><Text>🎪 Bazar beneficente - sáb. 08/11, 9h</Text><Ionicons name="chevron-forward" size={20} color="#ccc" style={styles.chevron} /></TouchableOpacity>
 
       </ScrollView>
     </SafeAreaView>
