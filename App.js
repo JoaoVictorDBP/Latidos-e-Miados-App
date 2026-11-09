@@ -7,6 +7,8 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import WelcomeScreen from './screens/WelcomeScreen';
 import LoginScreen from './screens/LoginScreen';
+import SignUpScreen from './screens/SignUpScreen';
+import ForgotPasswordScreen from './screens/ForgotPasswordScreen';
 import HomeScreen from './screens/HomeScreen';
 import FeedScreen from './screens/FeedScreen';
 import UserProfileScreen from './screens/UserProfileScreen';
@@ -27,6 +29,7 @@ import ScheduleVisitScreen from './screens/ScheduleVisitScreen';
 import ONGNewPostScreen from './screens/ONGNewPostScreen';
 import ONGAnimalScreen from './screens/ONGAnimalScreen';
 import ONGNewAnimalScreen from './screens/ONGNewAnimalScreen';
+import ONGEditAnimalScreen from './screens/ONGEditAnimalScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -49,6 +52,8 @@ export default function App() {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
           <Stack.Screen name="Welcome" component={WelcomeScreen} />
           <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="SignUp" component={SignUpScreen} />
+          <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
           <Stack.Screen name="MainTabs" component={MainTabs} />
           <Stack.Screen name="AnimalProfile" component={AnimalProfileScreen} />
           <Stack.Screen name="DonationValue" component={DonationValueScreen} />
@@ -64,6 +69,7 @@ export default function App() {
           <Stack.Screen name="ONGNewPost" component={ONGNewPostScreen} />
           <Stack.Screen name="ONGAnimal" component={ONGAnimalScreen} />
           <Stack.Screen name="ONGNewAnimal" component={ONGNewAnimalScreen} />
+          <Stack.Screen name="ONGEditAnimal" component={ONGEditAnimalScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>

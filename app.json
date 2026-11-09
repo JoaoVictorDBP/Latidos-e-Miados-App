@@ -22,6 +22,14 @@
       "expo-status-bar",
       "expo-font",
       [
+        "expo-image-picker",
+        {
+          "photosPermission": "Permita o acesso às suas fotos para anexar imagens e vídeos dos animais.",
+          "cameraPermission": "Permita o acesso à câmera para registrar fotos e vídeos dos animais.",
+          "microphonePermission": "Permita o acesso ao microfone para gravar vídeos dos animais."
+        }
+      ],
+      [
         "expo-splash-screen",
         {
           "image": "./assets/splash-icon.png",

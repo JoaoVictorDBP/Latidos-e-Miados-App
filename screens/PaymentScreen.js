@@ -3,8 +3,9 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'rea
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function PaymentScreen({ navigation }) {
+export default function PaymentScreen({ navigation, route }) {
   const [pagamento, setPagamento] = useState('pix');
+  const valor = route.params?.valor ?? 'R$ 50,00';
 
   return (
     <SafeAreaView style={styles.container}>
@@ -19,7 +20,7 @@ export default function PaymentScreen({ navigation }) {
           <Image source={require('../assets/images/bolinha-card.jpg')} style={styles.avatar} />
           <View>
             <Text style={styles.summaryTitle}>Bolinha</Text>
-            <Text style={styles.summarySubtitle}>R$ 50,00 por mês</Text>
+            <Text style={styles.summarySubtitle}>{valor} por mês</Text>
           </View>
         </View>
 
@@ -51,7 +52,7 @@ export default function PaymentScreen({ navigation }) {
       </ScrollView>
       <View style={styles.footer}>
         <TouchableOpacity style={styles.primaryButton} onPress={() => navigation.navigate('Confirmation')}>
-          <Text style={styles.primaryButtonText}>Confirmar R$ 50,00/mês</Text>
+          <Text style={styles.primaryButtonText}>Confirmar {valor}/mês</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

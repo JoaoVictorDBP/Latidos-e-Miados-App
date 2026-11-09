@@ -3,21 +3,31 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'rea
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
-export default function ONGAnimalScreen({ navigation }) {
+const ANIMAL = {
+  foto: require('../assets/images/zeca.jpg'),
+  nome: 'Zeca',
+  especie: 'Gato',
+  idade: '1 ano',
+  historia: 'Resgatado ainda filhote perto de um mercado da cidade. Hoje vive na sede da ONG e adora dormir em cima do saco de ração.',
+};
+
+export default function ONGAnimalScreen({ navigation, route }) {
+  const animal = route.params?.animal ?? ANIMAL;
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}><Ionicons name="arrow-back" size={24} color="#333" style={styles.backText} /></TouchableOpacity>
-        <Text style={styles.title}>Zeca</Text>
-        <TouchableOpacity><Text style={styles.editText}>Editar</Text></TouchableOpacity>
+        <Text style={styles.title}>{animal.nome}</Text>
+        <TouchableOpacity onPress={() => navigation.navigate('ONGEditAnimal', { animal })}><Text style={styles.editText}>Editar</Text></TouchableOpacity>
       </View>
       <ScrollView contentContainerStyle={styles.content}>
-        <TouchableOpacity style={styles.primaryButton}><Text style={styles.primaryButtonText}>+ Novo post para Zeca</Text></TouchableOpacity>
+        <TouchableOpacity style={styles.primaryButton}><Text style={styles.primaryButtonText}>+ Novo post para {animal.nome}</Text></TouchableOpacity>
 
         <View style={styles.post}>
           <View style={styles.postHeader}>
-            <Image source={require('../assets/images/zeca.jpg')} style={styles.avatar} />
-            <Text style={styles.postAuthor}>Zeca</Text>
+            <Image source={animal.foto} style={styles.avatar} />
+            <Text style={styles.postAuthor}>{animal.nome}</Text>
             <Text style={styles.badge}>Dia a dia</Text>
             <Text style={styles.date}>24/10/2026</Text>
           </View>

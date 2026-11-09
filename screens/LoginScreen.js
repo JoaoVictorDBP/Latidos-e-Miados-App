@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -17,13 +17,14 @@ export default function LoginScreen({ navigation }) {
       <Text style={styles.title}>Bem-vindo de volta!</Text>
       <Text style={styles.subtitle}>Entre na sua conta com e-mail e senha</Text>
 
-      <View style={styles.form}>
+      <ScrollView style={styles.form} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
         <Text style={styles.label}>E-mail</Text>
-        <TextInput 
-          style={styles.input} 
+        <TextInput
+          style={styles.input}
           value={email}
           onChangeText={setEmail}
           keyboardType="email-address"
+          autoCapitalize="none"
         />
 
         <Text style={styles.label}>Senha</Text>
@@ -48,15 +49,19 @@ export default function LoginScreen({ navigation }) {
 
         <Text style={styles.orText}>ou</Text>
 
-        <TouchableOpacity style={styles.googleButton}>
+        <TouchableOpacity style={styles.googleButton} onPress={() => navigation.navigate('MainTabs')}>
           <Image source={require('../assets/images/google.png')} style={styles.googleIcon} />
           <Text style={styles.googleButtonText}>Prosseguir com Google</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.forgotPassword}>
+        <TouchableOpacity style={styles.forgotPassword} onPress={() => navigation.navigate('ForgotPassword', { email })}>
           <Text style={styles.forgotText}>Esqueci a senha</Text>
         </TouchableOpacity>
-      </View>
+
+        <TouchableOpacity style={styles.signUpLink} onPress={() => navigation.navigate('SignUp')}>
+          <Text style={styles.forgotText}>Não tem uma conta? <Text style={styles.signUpLinkBold}>Cadastre-se</Text></Text>
+        </TouchableOpacity>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -79,5 +84,7 @@ const styles = StyleSheet.create({
   eyeButton: { position: 'absolute', right: 0, top: 6, padding: 4 },
   googleButtonText: { color: '#333', fontSize: 16, fontWeight: '600' },
   forgotPassword: { alignItems: 'center' },
-  forgotText: { color: '#666', fontSize: 14 }
+  forgotText: { color: '#666', fontSize: 14 },
+  signUpLink: { alignItems: 'center', marginTop: 24, marginBottom: 8 },
+  signUpLinkBold: { color: '#E67E22', fontWeight: 'bold' }
 });
