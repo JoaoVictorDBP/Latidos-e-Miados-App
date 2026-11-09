@@ -1,9 +1,39 @@
-import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useCallback, useRef } from 'react';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated, Easing } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
+
+const GASTOS = [
+  { valor: 'R$ 1.640', altura: 100, titulo: 'Ração' },
+  { valor: 'R$ 1.120', altura: 70, titulo: 'Remédios' },
+  { valor: 'R$ 860', altura: 50, titulo: 'Veterinário' },
+  { valor: 'R$ 420', altura: 30, titulo: 'Limpeza' },
+];
 
 export default function TransparenciaScreen() {
+  const alturas = useRef(GASTOS.map(() => new Animated.Value(0))).current;
+
+  // As barras sobem uma depois da outra sempre que a aba é aberta
+  useFocusEffect(
+    useCallback(() => {
+      alturas.forEach((altura) => altura.setValue(0));
+      const animacao = Animated.stagger(
+        120,
+        GASTOS.map((gasto, index) =>
+          Animated.timing(alturas[index], {
+            toValue: gasto.altura,
+            duration: 700,
+            easing: Easing.out(Easing.cubic),
+            useNativeDriver: false,
+          })
+        )
+      );
+      animacao.start();
+      return () => animacao.stop();
+    }, [alturas])
+  );
+
   return (
     <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <ScrollView contentContainerStyle={styles.content}>
@@ -27,10 +57,13 @@ export default function TransparenciaScreen() {
 
         <Text style={styles.sectionTitle}>Gastos do mês</Text>
         <View style={styles.chartContainer}>
-          <View style={styles.barItem}><Text style={styles.barLabel}>R$ 1.640</Text><View style={[styles.bar, { height: 100 }]} /><Text style={styles.barTitle}>Ração</Text></View>
-          <View style={styles.barItem}><Text style={styles.barLabel}>R$ 1.120</Text><View style={[styles.bar, { height: 70 }]} /><Text style={styles.barTitle}>Remédios</Text></View>
-          <View style={styles.barItem}><Text style={styles.barLabel}>R$ 860</Text><View style={[styles.bar, { height: 50 }]} /><Text style={styles.barTitle}>Veterinário</Text></View>
-          <View style={styles.barItem}><Text style={styles.barLabel}>R$ 420</Text><View style={[styles.bar, { height: 30 }]} /><Text style={styles.barTitle}>Limpeza</Text></View>
+          {GASTOS.map((gasto, index) => (
+            <View key={gasto.titulo} style={styles.barItem}>
+              <Text style={styles.barLabel}>{gasto.valor}</Text>
+              <Animated.View style={[styles.bar, { height: alturas[index] }]} />
+              <Text style={styles.barTitle}>{gasto.titulo}</Text>
+            </View>
+          ))}
         </View>
 
         <Text style={styles.sectionTitle}>Documentos</Text>

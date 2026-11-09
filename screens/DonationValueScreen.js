@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, KeyboardAvoidingView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 
 const VALORES = [
   { id: '10', valor: 'R$ 10,00', desc: 'cobre um vermífugo' },
@@ -65,7 +66,7 @@ export default function DonationValueScreen({ navigation }) {
                 <Text style={styles.optionTitle}>{item.valor}</Text>
                 {item.desc ? <Text style={styles.optionDesc}>{item.desc}</Text> : null}
                 {item.id === 'outro' && selectedId === 'outro' ? (
-                  <View>
+                  <Animated.View entering={FadeInDown.duration(200)}>
                     <View style={styles.outroRow}>
                       <Text style={styles.outroPrefixo}>R$</Text>
                       <TextInput
@@ -80,7 +81,7 @@ export default function DonationValueScreen({ navigation }) {
                       />
                     </View>
                     <Text style={styles.optionDesc}>Valor mínimo: R$ 10,00</Text>
-                  </View>
+                  </Animated.View>
                 ) : null}
               </View>
             </TouchableOpacity>

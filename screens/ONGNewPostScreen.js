@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Image,
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import Animated, { FadeIn } from 'react-native-reanimated';
 
 export default function ONGNewPostScreen({ navigation }) {
   const [anexo, setAnexo] = useState(null);
@@ -89,6 +90,7 @@ export default function ONGNewPostScreen({ navigation }) {
             <Text style={styles.attachText}>Anexar</Text>
           </TouchableOpacity>
         ) : (
+          <Animated.View entering={FadeIn.duration(250)}>
           <TouchableOpacity style={styles.attachmentPreview} onPress={abrirOpcoesDeAnexo} accessibilityLabel="Trocar anexo">
             {anexo.type === 'video' ? (
               <View style={styles.videoPreview}>
@@ -103,6 +105,7 @@ export default function ONGNewPostScreen({ navigation }) {
               <Ionicons name="close" size={20} color="#fff" />
             </TouchableOpacity>
           </TouchableOpacity>
+          </Animated.View>
         )}
 
         <Text style={styles.label}>Tipo</Text>

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput, Image,
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import Animated, { FadeInDown } from 'react-native-reanimated';
 
 export default function ONGEditAnimalScreen({ navigation, route }) {
   const animal = route.params.animal;
@@ -98,14 +99,14 @@ export default function ONGEditAnimalScreen({ navigation, route }) {
             <Ionicons name={especiesAbertas ? 'chevron-up' : 'chevron-down'} size={16} color="#666" />
           </TouchableOpacity>
           {especiesAbertas ? (
-            <View style={styles.dropdownList}>
+            <Animated.View style={styles.dropdownList} entering={FadeInDown.duration(150)}>
               {['Cachorro', 'Gato'].map((opcao) => (
                 <TouchableOpacity key={opcao} style={styles.dropdownOption} onPress={() => escolherEspecie(opcao)}>
                   <Text style={especie === opcao ? styles.dropdownOptionActive : styles.dropdownOptionText}>{opcao}</Text>
                   {especie === opcao ? <Ionicons name="checkmark" size={16} color="#E67E22" /> : null}
                 </TouchableOpacity>
               ))}
-            </View>
+            </Animated.View>
           ) : null}
 
           <Text style={styles.label}>Idade *</Text>

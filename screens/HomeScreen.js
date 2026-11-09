@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import Animated, { FadeIn } from 'react-native-reanimated';
 
 const ANIMAIS = [
   { id: '1', nome: 'Bolinha', tipo: 'Cão', idade: '9 anos', padrinhos: 3, imagem: require('../assets/images/bolinha-card.jpg') },
@@ -23,14 +24,13 @@ export default function HomeScreen({ navigation }) {
   });
 
   const renderItem = ({ item }) => (
-    <TouchableOpacity 
-      style={styles.card}
-      onPress={() => navigation.navigate('AnimalProfile')} 
-    >
-      <Image source={item.imagem} style={styles.cardImage} />
-      <Text style={styles.cardTitle}>{item.nome}</Text>
-      <Text style={styles.cardSubtitle}>{item.tipo} • {item.idade} • {item.padrinhos} padrinhos</Text>
-    </TouchableOpacity>
+    <Animated.View style={styles.card} entering={FadeIn.duration(250)}>
+      <TouchableOpacity onPress={() => navigation.navigate('AnimalProfile')}>
+        <Image source={item.imagem} style={styles.cardImage} />
+        <Text style={styles.cardTitle}>{item.nome}</Text>
+        <Text style={styles.cardSubtitle}>{item.tipo} • {item.idade} • {item.padrinhos} padrinhos</Text>
+      </TouchableOpacity>
+    </Animated.View>
   );
 
   return (

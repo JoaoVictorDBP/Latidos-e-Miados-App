@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, ScrollView, TextInput, Modal, KeyboardAvoidingView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 
 const MODAIS = {
   pausar: {
@@ -137,7 +138,7 @@ export default function ManageSponsorshipScreen({ navigation }) {
           </View>
 
           {valor === 'outro' ? (
-            <View style={styles.outroBox} onLayout={(evento) => { outroY.current = evento.nativeEvent.layout.y; }}>
+            <Animated.View style={styles.outroBox} entering={FadeInDown.duration(200)} onLayout={(evento) => { outroY.current = evento.nativeEvent.layout.y; }}>
               <View style={styles.outroRow}>
                 <Text style={styles.outroPrefixo}>R$</Text>
                 <TextInput
@@ -154,7 +155,7 @@ export default function ManageSponsorshipScreen({ navigation }) {
                 />
               </View>
               <Text style={styles.outroAjuda}>Valor mínimo: R$ 10,00</Text>
-            </View>
+            </Animated.View>
           ) : null}
 
           <Text style={styles.sectionLabel}>Forma de pagamento</Text>
@@ -175,7 +176,7 @@ export default function ManageSponsorshipScreen({ navigation }) {
           >
             <Text style={styles.primaryButtonText}>Salvar</Text>
           </TouchableOpacity>
-          {salvo ? <Text style={styles.successText}>Alterações salvas!</Text> : null}
+          {salvo ? <Animated.Text style={styles.successText} entering={FadeIn.duration(250)}>Alterações salvas!</Animated.Text> : null}
           <TouchableOpacity style={styles.outlineButton} onPress={() => (pausado ? setPausado(false) : abrirModal('pausar'))}>
             <Text style={styles.outlineButtonText}>{pausado ? 'Retomar apadrinhamento' : 'Pausar por 1 mês'}</Text>
           </TouchableOpacity>

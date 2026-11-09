@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, KeyboardAvoidingView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import Animated, { ZoomIn } from 'react-native-reanimated';
 
 export default function ForgotPasswordScreen({ navigation, route }) {
   const [email, setEmail] = useState(route.params?.email ?? '');
@@ -21,9 +22,9 @@ export default function ForgotPasswordScreen({ navigation, route }) {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.sentContent}>
-          <View style={styles.sentIcon}>
+          <Animated.View style={styles.sentIcon} entering={ZoomIn.duration(300)}>
             <Ionicons name="mail-outline" size={36} color="#E67E22" />
-          </View>
+          </Animated.View>
           <Text style={styles.sentTitle}>Verifique seu e-mail</Text>
           <Text style={styles.sentText}>
             Enviamos um link para redefinir sua senha para <Text style={styles.bold}>{email.trim()}</Text>. Confira também a caixa de spam.
