@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 const VALORES = [
@@ -52,7 +53,7 @@ export default function DonationValueScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
-  header: { padding: 16, marginTop: 10 },
+  header: { padding: 16 },
   backText: { fontSize: 24 },
   content: { padding: 24 },
   title: { fontSize: 24, fontWeight: 'bold', color: '#333', marginBottom: 24 },

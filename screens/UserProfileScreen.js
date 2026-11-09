@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function UserProfileScreen({ navigation }) {
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.header}>
           <View style={styles.avatarPlaceholder}><Text style={styles.avatarText}>D</Text></View>
@@ -57,7 +58,7 @@ export default function UserProfileScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
-  content: { padding: 16, marginTop: 10 },
+  content: { padding: 16 },
   header: { flexDirection: 'row', alignItems: 'center', marginBottom: 32 },
   avatarPlaceholder: { width: 50, height: 50, borderRadius: 25, backgroundColor: '#FDECE0', justifyContent: 'center', alignItems: 'center', marginRight: 16 },
   avatarText: { color: '#E67E22', fontSize: 24, fontWeight: 'bold' },

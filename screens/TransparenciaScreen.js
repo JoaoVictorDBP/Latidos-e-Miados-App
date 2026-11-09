@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function TransparenciaScreen() {
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <ScrollView contentContainerStyle={styles.content}>
         <Text style={styles.title}>Para onde vai o dinheiro</Text>
         
@@ -46,7 +47,7 @@ export default function TransparenciaScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
-  content: { padding: 16, marginTop: 10 },
+  content: { padding: 16 },
   title: { fontSize: 24, fontWeight: 'bold', color: '#006B5F', marginBottom: 16 },
   dateSelector: { flexDirection: 'row', gap: 16, marginBottom: 24 },
   dateText: { color: '#666', fontSize: 16, borderWidth: 1, borderColor: '#eee', paddingHorizontal: 12, paddingVertical: 6, borderRadius: 20 },

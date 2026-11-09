@@ -1,17 +1,20 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, SafeAreaView, TextInput, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ScrollView } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function PostScreen({ navigation }) {
+  const insets = useSafeAreaInsets();
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
       <ScrollView>
         <View style={styles.imageContainer}>
           <Image source={require('../assets/images/bolinha.jpg')} style={styles.image} />
           <View style={styles.playOverlay} pointerEvents="none">
             <View style={styles.playCircle}><Ionicons name="play" size={24} color="#fff" /></View>
           </View>
-          <TouchableOpacity style={styles.closeButton} onPress={() => navigation.goBack()}>
+          <TouchableOpacity style={[styles.closeButton, { top: insets.top + 12 }]} onPress={() => navigation.goBack()}>
             <Ionicons name="close" size={22} color="#fff" />
           </TouchableOpacity>
         </View>
@@ -42,7 +45,7 @@ const styles = StyleSheet.create({
   image: { width: '100%', height: 400, resizeMode: 'cover' },
   playOverlay: { position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, alignItems: 'center', justifyContent: 'center' },
   playCircle: { width: 64, height: 64, borderRadius: 32, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center' },
-  closeButton: { position: 'absolute', top: 40, left: 16, backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 20, width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
+  closeButton: { position: 'absolute', left: 16, backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 20, width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
   content: { padding: 24 },
   postInfo: { fontSize: 12, color: '#666', marginBottom: 8 },
   bold: { fontWeight: 'bold' },

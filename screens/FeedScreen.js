@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, SafeAreaView, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, ScrollView, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function FeedScreen({ navigation }) {
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <View style={styles.header}>
         <Text style={styles.title}>Meus afilhados</Text>
       </View>
@@ -45,7 +46,7 @@ export default function FeedScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
-  header: { padding: 16, marginTop: 10 },
+  header: { padding: 16 },
   title: { fontSize: 24, fontWeight: 'bold', color: '#006B5F' },
   filters: { flexDirection: 'row', paddingHorizontal: 16, marginBottom: 16, gap: 8 },
   chip: { paddingVertical: 6, paddingHorizontal: 16, borderRadius: 20, backgroundColor: '#f0f0f0' },

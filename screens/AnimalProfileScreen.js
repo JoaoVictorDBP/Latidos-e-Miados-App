@@ -1,17 +1,20 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function AnimalProfileScreen({ navigation }) {
+  const insets = useSafeAreaInsets();
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
       <ScrollView>
         <View style={styles.imageContainer}>
           <Image 
             source={require('../assets/images/bolinha.jpg')} 
             style={styles.image} 
           />
-          <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <TouchableOpacity style={[styles.backButton, { top: insets.top + 12 }]} onPress={() => navigation.goBack()}>
             <Ionicons name="arrow-back" size={24} color="#333" style={styles.backText} />
           </TouchableOpacity>
         </View>
@@ -41,7 +44,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
   imageContainer: { position: 'relative' },
   image: { width: '100%', height: 350, resizeMode: 'cover' },
-  backButton: { position: 'absolute', top: 40, left: 16, backgroundColor: 'rgba(255,255,255,0.7)', borderRadius: 20, width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
+  backButton: { position: 'absolute', left: 16, backgroundColor: 'rgba(255,255,255,0.7)', borderRadius: 20, width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
   backText: { fontSize: 24, fontWeight: 'bold' },
   content: { padding: 24 },
   name: { fontSize: 28, fontWeight: 'bold', color: '#006B5F' },

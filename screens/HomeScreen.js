@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, TextInput, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, TextInput } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 const ANIMAIS = [
-  { id: '1', nome: 'Bolinha', tipo: 'Cães', idade: '9 anos', padrinhos: 3, imagem: require('../assets/images/bolinha-card.jpg') },
-  { id: '2', nome: 'Pirata', tipo: 'Cães', idade: '1 ano', padrinhos: 0, imagem: require('../assets/images/pirata.jpg') },
-  { id: '3', nome: 'Zeca', tipo: 'Gatos', idade: '1 ano', padrinhos: 5, imagem: require('../assets/images/zeca.jpg') },
-  { id: '4', nome: 'Tieta', tipo: 'Gatos', idade: '3 anos', padrinhos: 2, imagem: require('../assets/images/tieta.jpg') },
+  { id: '1', nome: 'Bolinha', tipo: 'Cão', idade: '9 anos', padrinhos: 3, imagem: require('../assets/images/bolinha-card.jpg') },
+  { id: '2', nome: 'Pirata', tipo: 'Cão', idade: '1 ano', padrinhos: 0, imagem: require('../assets/images/pirata.jpg') },
+  { id: '3', nome: 'Zeca', tipo: 'Gato', idade: '1 ano', padrinhos: 5, imagem: require('../assets/images/zeca.jpg') },
+  { id: '4', nome: 'Tieta', tipo: 'Gato', idade: '3 anos', padrinhos: 2, imagem: require('../assets/images/tieta.jpg') },
 ];
 
 export default function HomeScreen({ navigation }) {
@@ -17,7 +18,7 @@ export default function HomeScreen({ navigation }) {
   // Lógica de filtragem
   const animaisFiltrados = ANIMAIS.filter(animal => {
     const passaBusca = animal.nome.toLowerCase().includes(searchText.toLowerCase());
-    const passaFiltro = activeFilter === 'Todos' || animal.tipo === activeFilter;
+    const passaFiltro = activeFilter === 'Todos' || animal.tipo.startsWith(activeFilter.substring(0, 2));
     return passaBusca && passaFiltro;
   });
 
@@ -28,12 +29,12 @@ export default function HomeScreen({ navigation }) {
     >
       <Image source={item.imagem} style={styles.cardImage} />
       <Text style={styles.cardTitle}>{item.nome}</Text>
-      <Text style={styles.cardSubtitle}>{item.tipo.slice(0,-1)} • {item.idade} • {item.padrinhos} padrinhos</Text>
+      <Text style={styles.cardSubtitle}>{item.tipo} • {item.idade} • {item.padrinhos} padrinhos</Text>
     </TouchableOpacity>
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <View style={styles.header}>
         <Text style={styles.title}>Animais</Text>
         <TouchableOpacity onPress={() => navigation.navigate('Notifications')} accessibilityLabel="Notificações, 3 novas">
@@ -80,7 +81,7 @@ export default function HomeScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff', padding: 16 },
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16, marginTop: 10 },
+  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
   title: { fontSize: 28, fontWeight: 'bold', color: '#006B5F' },
   badge: { position: 'absolute', top: -4, right: -6, backgroundColor: '#E67E22', borderRadius: 8, minWidth: 16, height: 16, alignItems: 'center', justifyContent: 'center' },
   badgeText: { color: '#fff', fontSize: 10, fontWeight: 'bold' },

@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function ONGDashboardScreen({ navigation }) {
@@ -73,7 +74,7 @@ export default function ONGDashboardScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff' },
-  content: { padding: 16, marginTop: 10 },
+  content: { padding: 16 },
   title: { fontSize: 24, fontWeight: 'bold', color: '#006B5F', marginBottom: 24 },
   statsRow: { flexDirection: 'row', gap: 12, marginBottom: 24 },
   statCard: { flex: 1, borderWidth: 1, borderColor: '#eee', borderRadius: 12, padding: 16 },

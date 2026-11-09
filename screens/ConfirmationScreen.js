@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, Image, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Alert } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ConfirmationScreen({ navigation }) {
   

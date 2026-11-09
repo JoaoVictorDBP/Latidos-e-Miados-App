@@ -3,6 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import WelcomeScreen from './screens/WelcomeScreen';
 import LoginScreen from './screens/LoginScreen';
@@ -43,26 +44,28 @@ function MainTabs() {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Welcome" component={WelcomeScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="MainTabs" component={MainTabs} />
-        <Stack.Screen name="AnimalProfile" component={AnimalProfileScreen} />
-        <Stack.Screen name="DonationValue" component={DonationValueScreen} />
-        <Stack.Screen name="Payment" component={PaymentScreen} />
-        <Stack.Screen name="Confirmation" component={ConfirmationScreen} />
-        <Stack.Screen name="ManageSponsorship" component={ManageSponsorshipScreen} />
-        <Stack.Screen name="Notifications" component={NotificationsScreen} />
-        <Stack.Screen name="NotificationSettings" component={NotificationSettingsScreen} />
-        <Stack.Screen name="Certificates" component={CertificatesScreen} />
-        <Stack.Screen name="ScheduleVisit" component={ScheduleVisitScreen} />
-        <Stack.Screen name="Post" component={PostScreen} />
-        <Stack.Screen name="ONGDashboard" component={ONGDashboardScreen} />
-        <Stack.Screen name="ONGNewPost" component={ONGNewPostScreen} />
-        <Stack.Screen name="ONGAnimal" component={ONGAnimalScreen} />
-        <Stack.Screen name="ONGNewAnimal" component={ONGNewAnimalScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Welcome" component={WelcomeScreen} />
+          <Stack.Screen name="Login" component={LoginScreen} />
+          <Stack.Screen name="MainTabs" component={MainTabs} />
+          <Stack.Screen name="AnimalProfile" component={AnimalProfileScreen} />
+          <Stack.Screen name="DonationValue" component={DonationValueScreen} />
+          <Stack.Screen name="Payment" component={PaymentScreen} />
+          <Stack.Screen name="Confirmation" component={ConfirmationScreen} />
+          <Stack.Screen name="ManageSponsorship" component={ManageSponsorshipScreen} />
+          <Stack.Screen name="Notifications" component={NotificationsScreen} />
+          <Stack.Screen name="NotificationSettings" component={NotificationSettingsScreen} />
+          <Stack.Screen name="Certificates" component={CertificatesScreen} />
+          <Stack.Screen name="ScheduleVisit" component={ScheduleVisitScreen} />
+          <Stack.Screen name="Post" component={PostScreen} />
+          <Stack.Screen name="ONGDashboard" component={ONGDashboardScreen} />
+          <Stack.Screen name="ONGNewPost" component={ONGNewPostScreen} />
+          <Stack.Screen name="ONGAnimal" component={ONGAnimalScreen} />
+          <Stack.Screen name="ONGNewAnimal" component={ONGNewAnimalScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, SafeAreaView, Image } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function LoginScreen({ navigation }) {
@@ -62,7 +63,7 @@ export default function LoginScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#fff', padding: 24 },
-  backButton: { marginBottom: 24, marginTop: 10 },
+  backButton: { marginBottom: 24 },
   backText: { fontSize: 24, color: '#333' },
   title: { fontSize: 28, fontWeight: 'bold', color: '#006B5F', marginBottom: 8 },
   subtitle: { fontSize: 16, color: '#666', marginBottom: 32 },
