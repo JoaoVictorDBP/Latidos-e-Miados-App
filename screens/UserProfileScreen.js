@@ -1,44 +1,66 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Screen from '../components/Screen';
 import ListRow from '../components/ListRow';
+import Tag from '../components/Tag';
+import ConfirmModal from '../components/ConfirmModal';
+import { buscarAnimal } from '../data/animais';
+import { USUARIO } from '../data/usuario';
+import { useApadrinhamentos } from '../context/ApadrinhamentosContext';
+import { formatarReais } from '../utils/currency';
 import { colors, typography } from '../theme';
-
-const APADRINHAMENTOS = [
-  { animal: 'Bolinha', valor: 'R$ 50,00', proximaCobranca: '03/12/2026', tela: 'ManageSponsorship' },
-  { animal: 'Tieta', valor: 'R$ 20,00', proximaCobranca: '03/12/2026' },
-];
 
 const MENU = [
   { titulo: '📜 Meus certificados', tela: 'Certificates' },
   { titulo: '📅 Agendar visita', tela: 'ScheduleVisit' },
   { titulo: '🔔 Notificações', tela: 'Notifications' },
+  { titulo: '❓ Ajuda e contato', tela: 'Help' },
   { titulo: '⚙️ Modo ONG (equipe)', tela: 'ONGDashboard' },
 ];
 
 export default function UserProfileScreen({ navigation }) {
+  const { apadrinhamentos } = useApadrinhamentos();
+
+  const [confirmandoSaida, setConfirmandoSaida] = useState(false);
+
+  // Sai da conta e limpa o histórico, para o "voltar" não reabrir telas logadas
+  const sair = () => {
+    setConfirmandoSaida(false);
+    navigation.reset({ index: 0, routes: [{ name: 'Welcome' }] });
+  };
+
   return (
     <Screen edges={['top', 'left', 'right']}>
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.header}>
-          <View style={styles.avatar}><Text style={styles.avatarText}>D</Text></View>
+          <View style={styles.avatar}><Text style={styles.avatarText}>{USUARIO.nome[0]}</Text></View>
           <View>
-            <Text style={styles.userName}>Daniel</Text>
-            <Text style={styles.userSubtitle}>padrinho desde 11/2026</Text>
+            <Text style={styles.userName}>{USUARIO.nome}</Text>
+            <Text style={styles.userSubtitle}>padrinho desde {USUARIO.padrinhoDesde}</Text>
           </View>
         </View>
 
         <Text style={styles.sectionTitle}>Meus apadrinhamentos</Text>
-        {APADRINHAMENTOS.map((item) => (
-          <TouchableOpacity key={item.animal} style={styles.card} onPress={item.tela ? () => navigation.navigate(item.tela) : undefined}>
-            <View style={styles.cardInfo}>
-              <Text style={styles.cardTitle}>{item.animal} • {item.valor}/mês</Text>
-              <Text style={styles.cardSubtitle}>próxima cobrança: {item.proximaCobranca}</Text>
-            </View>
-            <Ionicons name="chevron-forward" size={20} color={colors.borderStrong} />
-          </TouchableOpacity>
-        ))}
+        {apadrinhamentos.length === 0 ? <Text style={styles.empty}>Você ainda não apadrinha nenhum animal.</Text> : null}
+        {apadrinhamentos.map((item) => {
+          const animal = buscarAnimal(item.animalId);
+          return (
+            <TouchableOpacity key={item.animalId} style={styles.card} onPress={() => navigation.navigate('ManageSponsorship', { animalId: item.animalId })}>
+              <Image source={animal.imagem} style={styles.cardImage} />
+              <View style={styles.cardInfo}>
+                <View style={styles.cardTitleRow}>
+                  <Text style={styles.cardTitle}>{animal.nome} • {formatarReais(item.valorCentavos)}/mês</Text>
+                  <Tag label={item.pausadoAte ? 'Pausado' : 'Ativo'} variant={item.pausadoAte ? 'primary' : 'secondary'} />
+                </View>
+                <Text style={styles.cardSubtitle}>
+                  {item.pausadoAte ? 'cobrança volta em ' + item.pausadoAte : 'próxima cobrança: ' + item.proximaCobranca}
+                </Text>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color={colors.borderStrong} />
+            </TouchableOpacity>
+          );
+        })}
 
         <Text style={styles.sectionTitle}>Mais</Text>
         {MENU.map((item) => (
@@ -46,8 +68,20 @@ export default function UserProfileScreen({ navigation }) {
         ))}
 
         <Text style={styles.sectionTitle}>Conta</Text>
-        <ListRow label="↩️ Sair" labelStyle={styles.logoutText} onPress={() => navigation.navigate('Welcome')} />
+        <ListRow label="↩️ Sair" labelStyle={styles.logoutText} onPress={() => setConfirmandoSaida(true)} />
       </ScrollView>
+
+      <ConfirmModal
+        visible={confirmandoSaida}
+        icone="log-out-outline"
+        cor={colors.danger}
+        titulo="Deseja mesmo sair?"
+        texto="Você precisará entrar de novo para acompanhar seus afilhados."
+        confirmar="Sair"
+        voltar="Cancelar"
+        onConfirm={sair}
+        onClose={() => setConfirmandoSaida(false)}
+      />
     </Screen>
   );
 }
@@ -60,8 +94,11 @@ const styles = StyleSheet.create({
   userName: { ...typography.headerTitle },
   userSubtitle: { ...typography.body, color: colors.textMuted },
   sectionTitle: { ...typography.sectionTitle, color: colors.secondary, marginBottom: 16, marginTop: 8 },
+  empty: { ...typography.body, color: colors.textMuted, marginBottom: 16 },
   card: { flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: colors.border, borderRadius: 12, padding: 16, marginBottom: 12 },
+  cardImage: { width: 44, height: 44, borderRadius: 22, marginRight: 12 },
   cardInfo: { flex: 1 },
+  cardTitleRow: { flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 6 },
   cardTitle: { fontSize: 16, fontWeight: 'bold', color: colors.text },
   cardSubtitle: { ...typography.caption, marginTop: 4 },
   logoutText: { color: colors.danger },

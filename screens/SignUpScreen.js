@@ -41,7 +41,7 @@ export default function SignUpScreen({ navigation }) {
 
           <TextField label="Nome" value={form.nome} onChangeText={alterar('nome')} error={erroVisivel('nome')} autoCapitalize="words" autoComplete="name" />
           <TextField label="E-mail" value={form.email} onChangeText={alterar('email')} error={erroVisivel('email')} keyboardType="email-address" autoCapitalize="none" autoComplete="email" />
-          <TextField label="Senha" value={form.senha} onChangeText={alterar('senha')} error={erroVisivel('senha')} password autoCapitalize="none" autoComplete="new-password" placeholder="Mínimo de 6 caracteres" />
+          <TextField label="Senha" value={form.senha} onChangeText={alterar('senha')} error={erroVisivel('senha')} password autoCapitalize="none" autoComplete="new-password" hint="Mínimo de 6 caracteres" />
           <TextField label="Confirmar senha" value={form.confirmarSenha} onChangeText={alterar('confirmarSenha')} error={erroVisivel('confirmarSenha')} password autoCapitalize="none" autoComplete="new-password" />
 
           <Button title="Criar conta" onPress={handleCadastrar} style={authStyles.spaced} />

@@ -38,15 +38,18 @@ export default function ONGDashboardScreen({ navigation }) {
             {semPostRecente.map((animal) => (
               <View key={animal.id} style={styles.alertRow}>
                 <Text style={styles.alertText}><Text style={typography.bold}>{animal.nome}</Text> não tem post há {animal.diasSemPost} dias</Text>
-                <Button title="Postar" size="small" onPress={() => navigation.navigate('ONGNewPost')} />
+                <Button title="Postar" size="small" onPress={() => navigation.navigate('ONGNewPost', { animalId: animal.id })} />
               </View>
             ))}
           </View>
         ) : null}
 
-        <Text style={[typography.sectionTitle, styles.sectionTitle]}>Animais</Text>
+        <View style={styles.sectionHeader}>
+          <Text style={typography.sectionTitle}>Animais</Text>
+          <Button title="+ Novo animal" size="small" onPress={() => navigation.navigate('ONGNewAnimal')} />
+        </View>
         {ANIMAIS.map((animal) => (
-          <TouchableOpacity key={animal.id} style={styles.animalItem} onPress={() => navigation.navigate('ONGAnimal')}>
+          <TouchableOpacity key={animal.id} style={styles.animalItem} onPress={() => navigation.navigate('ONGAnimal', { animalId: animal.id })}>
             <Image source={animal.imagem} style={styles.animalImg} />
             <View style={styles.animalInfo}>
               <Text style={styles.animalName}>{animal.nome}</Text>
@@ -75,7 +78,7 @@ const styles = StyleSheet.create({
   alertTitle: { fontWeight: 'bold', color: colors.text, marginBottom: 12 },
   alertRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', gap: 12 },
   alertText: { ...typography.body, color: colors.textMuted, flex: 1 },
-  sectionTitle: { marginBottom: 16 },
+  sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
   animalItem: { flexDirection: 'row', alignItems: 'center', marginBottom: 16, borderBottomWidth: 1, borderBottomColor: colors.border, paddingBottom: 12 },
   animalImg: { width: 50, height: 50, borderRadius: 25, marginRight: 16 },
   animalInfo: { flex: 1 },

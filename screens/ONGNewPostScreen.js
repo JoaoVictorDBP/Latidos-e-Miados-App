@@ -7,6 +7,9 @@ import ScreenHeader from '../components/ScreenHeader';
 import Button from '../components/Button';
 import { ChipGroup } from '../components/Chip';
 import ONGTabBar from '../components/ONGTabBar';
+import { ANIMAIS, buscarAnimal } from '../data/animais';
+import { CATEGORIAS_POST } from '../data/posts';
+import useConfirmarDescarte from '../hooks/useConfirmarDescarte';
 import { escolherDaGaleria, capturarComCamera } from '../utils/mediaPicker';
 import { colors } from '../theme';
 import { ongFormStyles } from '../styles/ongForm';
@@ -16,10 +19,15 @@ const formatarDuracao = (milissegundos) => {
   return Math.floor(segundos / 60) + ':' + (segundos % 60).toString().padStart(2, '0');
 };
 
-export default function ONGNewPostScreen({ navigation }) {
+export default function ONGNewPostScreen({ navigation, route }) {
+  const [animalId, setAnimalId] = useState(route.params?.animalId ?? null);
+  const [categoria, setCategoria] = useState(CATEGORIAS_POST[0]);
+  const [legenda, setLegenda] = useState('');
   const [anexo, setAnexo] = useState(null);
   const [legendaFocada, setLegendaFocada] = useState(false);
   const scrollRef = useRef(null);
+  const { sairSemPerguntar, modalDescarte } = useConfirmarDescarte(Boolean(anexo || legenda.trim()));
+  const podePublicar = Boolean(animalId && anexo);
 
   const anexar = async (buscarArquivo) => {
     const arquivo = await buscarArquivo();
@@ -60,11 +68,8 @@ export default function ONGNewPostScreen({ navigation }) {
 
       <KeyboardAvoidingView style={ongFormStyles.flex} behavior="padding">
         <ScrollView ref={scrollRef} contentContainerStyle={ongFormStyles.content} keyboardShouldPersistTaps="handled" onLayout={rolarParaLegenda}>
-          <Text style={styles.label}>Pra que animal é?</Text>
-          <View style={ongFormStyles.dropdown}>
-            <Text>Bolinha</Text>
-            <Ionicons name="chevron-down" size={16} color={colors.textMuted} />
-          </View>
+          <Text style={styles.label}>Pra que animal é? *</Text>
+          <ChipGroup options={ANIMAIS.map((animal) => animal.id)} selected={animalId} onSelect={setAnimalId} getLabel={(id) => buscarAnimal(id).nome} />
 
           <Text style={styles.label}>Foto ou vídeo *</Text>
           {!anexo ? (
@@ -92,25 +97,29 @@ export default function ONGNewPostScreen({ navigation }) {
           )}
 
           <Text style={styles.label}>Tipo</Text>
-          <ChipGroup options={['Dia a dia', 'Saúde', 'Marco']} selected="Dia a dia" />
+          <ChipGroup options={CATEGORIAS_POST} selected={categoria} onSelect={setCategoria} />
 
           <Text style={styles.label}>Legenda (opcional)</Text>
           <TextInput
             style={styles.input}
             multiline
             placeholder="Ex.: 'tomando sol depois do almoço'"
+            value={legenda}
+            onChangeText={setLegenda}
             onFocus={() => setLegendaFocada(true)}
             onBlur={() => setLegendaFocada(false)}
           />
         </ScrollView>
 
-        {/* Publicar simula o sucesso da postagem voltando ao Painel */}
+        {/* Publicar simula o sucesso da postagem voltando à tela anterior */}
         <View style={styles.publishContainer}>
-          <Button title="Publicar" disabled={!anexo} onPress={() => navigation.goBack()} />
+          {!podePublicar ? <Text style={styles.hint}>Escolha o animal e anexe uma foto ou vídeo</Text> : null}
+          <Button title="Publicar" disabled={!podePublicar} onPress={() => sairSemPerguntar(navigation.goBack)} />
         </View>
       </KeyboardAvoidingView>
 
       <ONGTabBar ativa="novoPost" />
+      {modalDescarte}
     </Screen>
   );
 }
@@ -126,4 +135,5 @@ const styles = StyleSheet.create({
   removeButton: { position: 'absolute', top: 12, right: 12, backgroundColor: colors.overlay, borderRadius: 20, width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
   input: { borderWidth: 1, borderColor: colors.borderStrong, borderRadius: 8, padding: 16, height: 100, textAlignVertical: 'top' },
   publishContainer: { padding: 24, paddingBottom: 16 },
+  hint: { fontSize: 12, color: colors.textMuted, textAlign: 'center', marginBottom: 8 },
 });

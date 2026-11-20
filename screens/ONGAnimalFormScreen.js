@@ -8,6 +8,7 @@ import Button from '../components/Button';
 import TextField from '../components/TextField';
 import { ESPECIES } from '../data/animais';
 import { escolherDaGaleria, capturarComCamera } from '../utils/mediaPicker';
+import useConfirmarDescarte from '../hooks/useConfirmarDescarte';
 import { colors } from '../theme';
 import { ongFormStyles } from '../styles/ongForm';
 
@@ -19,28 +20,38 @@ const ERROS = {
   historia: 'Conte a história do resgate',
 };
 
-export default function ONGEditAnimalScreen({ navigation, route }) {
-  const original = route.params.animal;
+const ANIMAL_VAZIO = { imagem: null, nome: '', especie: ESPECIES[0], idade: '', historia: '' };
+
+// Formulário do modo ONG: cadastra um animal novo ou edita o animal recebido por parâmetro
+export default function ONGAnimalFormScreen({ navigation, route }) {
+  const original = route.params?.animal ?? ANIMAL_VAZIO;
+  const editando = Boolean(route.params?.animal);
   const [animal, setAnimal] = useState(original);
+  const [tocados, setTocados] = useState({});
   const [especiesAbertas, setEspeciesAbertas] = useState(false);
   const [historiaFocada, setHistoriaFocada] = useState(false);
   const scrollRef = useRef(null);
 
-  const alterar = (campo) => (valor) => setAnimal((atual) => ({ ...atual, [campo]: valor }));
-  const erro = (campo) => (animal[campo].trim() ? '' : ERROS[campo]);
+  const alterar = (campo) => (valor) => {
+    setAnimal((atual) => ({ ...atual, [campo]: valor }));
+    setTocados((atual) => ({ ...atual, [campo]: true }));
+  };
+  // O erro só aparece depois que a pessoa mexeu no campo
+  const erro = (campo) => (tocados[campo] && !animal[campo].trim() ? ERROS[campo] : '');
 
-  const temAlteracao = animal.foto !== original.foto || animal.especie !== original.especie
+  const temAlteracao = animal.imagem !== original.imagem || animal.especie !== original.especie
     || CAMPOS_DE_TEXTO.some((campo) => animal[campo].trim() !== original[campo]);
-  const camposPreenchidos = CAMPOS_DE_TEXTO.every((campo) => !erro(campo));
+  const camposPreenchidos = Boolean(animal.imagem) && CAMPOS_DE_TEXTO.every((campo) => animal[campo].trim());
   const podeSalvar = temAlteracao && camposPreenchidos;
+  const { sairSemPerguntar, modalDescarte } = useConfirmarDescarte(temAlteracao);
 
   const trocarFotoPor = async (buscarFoto) => {
     const foto = await buscarFoto();
-    if (foto) alterar('foto')({ uri: foto.uri });
+    if (foto) alterar('imagem')({ uri: foto.uri });
   };
 
-  const trocarFoto = () => {
-    Alert.alert('Trocar foto', 'De onde você quer escolher a nova foto?', [
+  const escolherFoto = () => {
+    Alert.alert(editando ? 'Trocar foto' : 'Adicionar foto', 'De onde você quer escolher a foto?', [
       { text: 'Cancelar', style: 'cancel' },
       { text: 'Câmera', onPress: () => trocarFotoPor(() => capturarComCamera('images')) },
       { text: 'Galeria', onPress: () => trocarFotoPor(() => escolherDaGaleria(['images'])) },
@@ -52,11 +63,12 @@ export default function ONGEditAnimalScreen({ navigation, route }) {
     setEspeciesAbertas(false);
   };
 
-  // Simula o salvamento voltando para a página do animal com os dados novos
+  // Simula o salvamento: a edição volta para a página do animal com os dados novos
   const handleSalvar = () => {
     const animalSalvo = { ...animal };
     CAMPOS_DE_TEXTO.forEach((campo) => { animalSalvo[campo] = animal[campo].trim(); });
-    navigation.popTo('ONGAnimal', { animal: animalSalvo });
+    sairSemPerguntar(() => (editando ? navigation.popTo('ONGAnimal', { animal: animalSalvo }) : navigation.goBack()));
+    if (!editando) Alert.alert('Animal cadastrado', animalSalvo.nome + ' já aparece para a equipe da ONG.');
   };
 
   // Mantém a história visível acima do teclado
@@ -66,17 +78,24 @@ export default function ONGEditAnimalScreen({ navigation, route }) {
 
   return (
     <Screen>
-      <ScreenHeader title="Editar animal" />
+      <ScreenHeader title={editando ? 'Editar animal' : 'Novo animal'} />
 
       <KeyboardAvoidingView style={ongFormStyles.flex} behavior="padding">
         <ScrollView ref={scrollRef} contentContainerStyle={ongFormStyles.content} keyboardShouldPersistTaps="handled" onLayout={rolarParaHistoria}>
-          <TouchableOpacity style={styles.photoPreview} onPress={trocarFoto} accessibilityLabel="Trocar foto do animal">
-            <Image source={animal.foto} style={ongFormStyles.previewImage} />
-            <View style={[ongFormStyles.changeBadge, styles.changeBadge]}>
-              <Ionicons name="camera-outline" size={16} color={colors.white} />
-              <Text style={ongFormStyles.changeBadgeText}>Trocar foto</Text>
-            </View>
-          </TouchableOpacity>
+          {animal.imagem ? (
+            <TouchableOpacity style={styles.photoPreview} onPress={escolherFoto} accessibilityLabel="Trocar foto do animal">
+              <Image source={animal.imagem} style={ongFormStyles.previewImage} />
+              <View style={[ongFormStyles.changeBadge, styles.changeBadge]}>
+                <Ionicons name="camera-outline" size={16} color={colors.white} />
+                <Text style={ongFormStyles.changeBadgeText}>Trocar foto</Text>
+              </View>
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity style={styles.photoUpload} onPress={escolherFoto}>
+              <Ionicons name="camera-outline" size={32} color={colors.primary} />
+              <Text style={styles.photoText}>Adicionar foto *</Text>
+            </TouchableOpacity>
+          )}
 
           <TextField variant="boxed" label="Nome *" value={animal.nome} onChangeText={alterar('nome')} error={erro('nome')} autoCapitalize="words" />
 
@@ -117,12 +136,15 @@ export default function ONGEditAnimalScreen({ navigation, route }) {
           <Button title="Salvar" disabled={!podeSalvar} onPress={handleSalvar} />
         </View>
       </KeyboardAvoidingView>
+      {modalDescarte}
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
   photoPreview: { borderRadius: 12, overflow: 'hidden', marginBottom: 12 },
+  photoUpload: { backgroundColor: colors.surface, borderWidth: 1, borderColor: '#ddd', borderStyle: 'dashed', borderRadius: 12, padding: 32, alignItems: 'center', gap: 8, marginBottom: 12 },
+  photoText: { color: colors.textMuted },
   changeBadge: { right: 12 },
   dropdownList: { borderWidth: 1, borderColor: colors.borderStrong, borderRadius: 8, marginTop: 4, backgroundColor: colors.background },
   dropdownOption: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 12 },

@@ -3,29 +3,37 @@ import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, TextInput } 
 import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeIn } from 'react-native-reanimated';
 import Screen from '../components/Screen';
+import Tag from '../components/Tag';
 import { ChipGroup } from '../components/Chip';
-import { ANIMAIS } from '../data/animais';
+import { ANIMAIS, ESPECIE_CURTA } from '../data/animais';
+import { useApadrinhamentos } from '../context/ApadrinhamentosContext';
+import { useNotificacoes } from '../context/NotificacoesContext';
 import { pluralizar } from '../utils/text';
 import { colors, typography } from '../theme';
 
-const FILTROS = { Todos: null, 'Cães': 'Cão', Gatos: 'Gato' };
+const FILTROS = { Todos: null, 'Cães': 'Cachorro', Gatos: 'Gato' };
 
 export default function HomeScreen({ navigation }) {
   const [busca, setBusca] = useState('');
   const [filtro, setFiltro] = useState('Todos');
+  const { buscarApadrinhamento } = useApadrinhamentos();
+  const { naoLidas } = useNotificacoes();
 
   const animaisFiltrados = ANIMAIS.filter((animal) => {
     const passaBusca = animal.nome.toLowerCase().includes(busca.trim().toLowerCase());
-    const passaFiltro = !FILTROS[filtro] || animal.tipo === FILTROS[filtro];
+    const passaFiltro = !FILTROS[filtro] || animal.especie === FILTROS[filtro];
     return passaBusca && passaFiltro;
   });
 
   const renderAnimal = ({ item }) => (
     <Animated.View style={styles.card} entering={FadeIn.duration(250)}>
-      <TouchableOpacity onPress={() => navigation.navigate('AnimalProfile')}>
-        <Image source={item.imagem} style={styles.cardImage} />
+      <TouchableOpacity onPress={() => navigation.navigate('AnimalProfile', { animalId: item.id })}>
+        <View>
+          <Image source={item.imagem} style={styles.cardImage} />
+          {buscarApadrinhamento(item.id) ? <Tag label="Seu afilhado" style={styles.cardTag} /> : null}
+        </View>
         <Text style={styles.cardTitle}>{item.nome}</Text>
-        <Text style={typography.caption}>{item.tipo} • {item.idade} • {pluralizar(item.padrinhos, 'padrinho', 'padrinhos')}</Text>
+        <Text style={typography.caption}>{ESPECIE_CURTA[item.especie]} • {item.idade} • {pluralizar(item.padrinhos, 'padrinho', 'padrinhos')}</Text>
       </TouchableOpacity>
     </Animated.View>
   );
@@ -34,15 +42,20 @@ export default function HomeScreen({ navigation }) {
     <Screen style={styles.container} edges={['top', 'left', 'right']}>
       <View style={styles.header}>
         <Text style={typography.screenTitle}>Animais</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Notifications')} accessibilityLabel="Notificações, 3 novas">
+        <TouchableOpacity onPress={() => navigation.navigate('Notifications')} accessibilityLabel={naoLidas ? 'Notificações, ' + naoLidas + ' novas' : 'Notificações'}>
           <Ionicons name="notifications-outline" size={26} color={colors.text} />
-          <View style={styles.badge}><Text style={styles.badgeText}>3</Text></View>
+          {naoLidas ? <View style={styles.badge}><Text style={styles.badgeText}>{naoLidas}</Text></View> : null}
         </TouchableOpacity>
       </View>
 
       <View style={styles.searchBar}>
         <Ionicons name="search-outline" size={18} color={colors.textMuted} />
         <TextInput style={styles.searchInput} placeholder="Buscar pelo nome" value={busca} onChangeText={setBusca} />
+        {busca ? (
+          <TouchableOpacity onPress={() => setBusca('')} accessibilityLabel="Limpar busca" hitSlop={8}>
+            <Ionicons name="close-circle" size={18} color={colors.textLight} />
+          </TouchableOpacity>
+        ) : null}
       </View>
 
       <ChipGroup options={Object.keys(FILTROS)} selected={filtro} onSelect={setFiltro} variant="filled" style={styles.filters} />
@@ -54,7 +67,14 @@ export default function HomeScreen({ navigation }) {
         numColumns={2}
         columnWrapperStyle={styles.row}
         showsVerticalScrollIndicator={false}
-        ListEmptyComponent={<Text style={styles.empty}>Nenhum animal encontrado</Text>}
+        ListEmptyComponent={
+          <View style={styles.empty}>
+            <Text style={styles.emptyText}>Nenhum animal encontrado</Text>
+            <TouchableOpacity onPress={() => { setBusca(''); setFiltro('Todos'); }}>
+              <Text style={styles.emptyLink}>Limpar busca</Text>
+            </TouchableOpacity>
+          </View>
+        }
       />
     </Screen>
   );
@@ -71,6 +91,9 @@ const styles = StyleSheet.create({
   row: { justifyContent: 'space-between' },
   card: { width: '48%', marginBottom: 16 },
   cardImage: { width: '100%', height: 150, borderRadius: 12, marginBottom: 8 },
+  cardTag: { position: 'absolute', top: 8, left: 8 },
   cardTitle: { fontSize: 16, fontWeight: 'bold', color: colors.text },
-  empty: { ...typography.body, color: colors.textMuted, textAlign: 'center', marginTop: 24 },
+  empty: { alignItems: 'center', marginTop: 24, gap: 8 },
+  emptyText: { ...typography.body, color: colors.textMuted },
+  emptyLink: { color: colors.primary, fontWeight: 'bold' },
 });

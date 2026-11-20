@@ -4,8 +4,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../theme';
 
 // Campo de formulário com rótulo e erro. "underline" nas telas de conta, "boxed" no modo ONG.
-// Com "password", ganha o botão de mostrar/ocultar senha.
-export default function TextField({ label, error, variant = 'underline', password = false, style, inputStyle, ...inputProps }) {
+// Com "password", ganha o botão de mostrar/ocultar senha. "hint" é uma dica fixa abaixo do campo.
+export default function TextField({ label, error, hint, variant = 'underline', password = false, style, inputStyle, ...inputProps }) {
   const [senhaVisivel, setSenhaVisivel] = useState(false);
   const boxed = variant === 'boxed';
 
@@ -26,7 +26,7 @@ export default function TextField({ label, error, variant = 'underline', passwor
           </TouchableOpacity>
         ) : null}
       </View>
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      {error ? <Text style={styles.errorText}>{error}</Text> : hint ? <Text style={styles.hintText}>{hint}</Text> : null}
     </View>
   );
 }
@@ -44,4 +44,5 @@ const styles = StyleSheet.create({
   eyeButton: { position: 'absolute', right: 0, top: 6, padding: 4 },
   inputError: { borderColor: colors.danger, borderBottomColor: colors.danger },
   errorText: { color: colors.danger, fontSize: 12, marginTop: 4 },
+  hintText: { color: colors.textMuted, fontSize: 12, marginTop: 4 },
 });

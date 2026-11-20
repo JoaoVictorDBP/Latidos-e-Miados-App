@@ -5,13 +5,24 @@ import BackButton from '../components/BackButton';
 import Button from '../components/Button';
 import GoogleButton from '../components/GoogleButton';
 import TextField from '../components/TextField';
+import { emailValido } from '../utils/text';
 import { authStyles } from '../styles/auth';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
+  const [tentouEntrar, setTentouEntrar] = useState(false);
 
-  const entrar = () => navigation.navigate('MainTabs');
+  const erroEmail = tentouEntrar && !emailValido(email) ? 'Informe um e-mail válido' : '';
+  const erroSenha = tentouEntrar && !senha ? 'Informe sua senha' : '';
+
+  const irParaApp = () => navigation.navigate('MainTabs');
+
+  // Simula o login no protótipo, exigindo os campos preenchidos como no cadastro
+  const entrar = () => {
+    setTentouEntrar(true);
+    if (emailValido(email) && senha) irParaApp();
+  };
 
   return (
     <Screen style={authStyles.container}>
@@ -21,12 +32,12 @@ export default function LoginScreen({ navigation }) {
       <Text style={authStyles.subtitle}>Entre na sua conta com e-mail e senha</Text>
 
       <ScrollView style={authStyles.form} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-        <TextField label="E-mail" value={email} onChangeText={setEmail} keyboardType="email-address" autoCapitalize="none" autoComplete="email" />
-        <TextField label="Senha" value={senha} onChangeText={setSenha} password autoCapitalize="none" autoComplete="current-password" />
+        <TextField label="E-mail" value={email} onChangeText={setEmail} error={erroEmail} keyboardType="email-address" autoCapitalize="none" autoComplete="email" />
+        <TextField label="Senha" value={senha} onChangeText={setSenha} error={erroSenha} password autoCapitalize="none" autoComplete="current-password" />
 
         <Button title="Entrar" onPress={entrar} style={authStyles.spaced} />
         <Text style={authStyles.orText}>ou</Text>
-        <GoogleButton onPress={entrar} style={authStyles.spaced} />
+        <GoogleButton onPress={irParaApp} style={authStyles.spaced} />
 
         <TouchableOpacity style={styles.link} onPress={() => navigation.navigate('ForgotPassword', { email })}>
           <Text style={authStyles.linkText}>Esqueci a senha</Text>

@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Alert } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { CannonConfetti } from 'react-native-fast-confetti';
 import Animated, { Keyframe } from 'react-native-reanimated';
 import Screen from '../components/Screen';
 import Button from '../components/Button';
 import Certificate from '../components/Certificate';
+import { buscarAnimal } from '../data/animais';
+import { USUARIO } from '../data/usuario';
+import { useApadrinhamentos } from '../context/ApadrinhamentosContext';
+import { compartilharCertificado } from '../utils/share';
 import { colors, typography } from '../theme';
 
 const CORES_CONFETE = [colors.primary, colors.secondary, '#F5B041', '#2A9D8F', colors.danger];
@@ -15,13 +19,10 @@ const ENTRADA_CERTIFICADO = new Keyframe({
   100: { opacity: 1, transform: [{ scale: 1 }] },
 }).duration(350);
 
-export default function ConfirmationScreen({ navigation }) {
+export default function ConfirmationScreen({ navigation, route }) {
+  const animal = buscarAnimal(route.params?.animalId ?? '1');
+  const desde = useApadrinhamentos().buscarApadrinhamento(animal.id)?.desde;
   const [mostrarConfete, setMostrarConfete] = useState(true);
-
-  // Simula o compartilhamento no protótipo
-  const handleShare = () => {
-    Alert.alert('Compartilhar Certificado', 'Abrindo opções de compartilhamento do seu dispositivo...');
-  };
 
   return (
     <Screen>
@@ -29,15 +30,16 @@ export default function ConfirmationScreen({ navigation }) {
         <Text style={styles.title}>Agora você é padrinho! 🎉</Text>
 
         <Animated.View style={styles.certificate} entering={ENTRADA_CERTIFICADO}>
-          <Certificate padrinho="Daniel" animal="Bolinha" imagem={require('../assets/images/bolinha-card.jpg')} desde="03/11/2026" large />
+          <Certificate padrinho={USUARIO.nome} animal={animal.nome} imagem={animal.imagem} desde={desde} large />
         </Animated.View>
 
-        <Text style={styles.infoText}>Você vai receber uma notificação a cada novidade do Bolinha.</Text>
+        <Text style={styles.infoText}>Você vai receber uma notificação a cada novidade de {animal.nome}.</Text>
       </View>
 
       <View style={styles.footer}>
-        <Button title="Compartilhar certificado 🔗" variant="outline" onPress={handleShare} style={styles.spaced} />
-        <Button title="Ver o feed de Bolinha" onPress={() => navigation.navigate('MainTabs', { screen: 'MeusAfilhados' })} />
+        <Button title="Compartilhar certificado 🔗" variant="outline" onPress={() => compartilharCertificado(animal.nome)} style={styles.spaced} />
+        <Button title={'Ver o feed de ' + animal.nome} onPress={() => navigation.popTo('MainTabs', { screen: 'MeusAfilhados', params: { animalId: animal.id } })} style={styles.spaced} />
+        <Button title="Voltar ao início" variant="ghost" onPress={() => navigation.popTo('MainTabs', { screen: 'Inicio' })} />
       </View>
 
       {/* Confete comemorando o apadrinhamento: sai dos dois cantos e não bloqueia os botões */}
@@ -62,7 +64,7 @@ const styles = StyleSheet.create({
   title: { ...typography.pageTitle, marginBottom: 32 },
   certificate: { width: '100%' },
   infoText: { ...typography.body, textAlign: 'center', color: colors.textMuted, paddingHorizontal: 20 },
-  footer: { padding: 24 },
+  footer: { padding: 24, paddingTop: 0 },
   spaced: { marginBottom: 12 },
   confete: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 },
 });

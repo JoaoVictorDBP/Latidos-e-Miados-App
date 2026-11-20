@@ -3,19 +3,21 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 import { Ionicons } from '@expo/vector-icons';
 import Screen from '../components/Screen';
 import ScreenHeader from '../components/ScreenHeader';
+import { useNotificacoes } from '../context/NotificacoesContext';
 import { colors, typography } from '../theme';
 
-const NOTIFICACOES = [
-  { periodo: 'Hoje', itens: [
-    { id: '1', icone: '🐾', destaque: 'Bolinha', antes: '', depois: ' tem um vídeo novo!' },
-    { id: '2', icone: '🩺', destaque: 'Tieta', antes: 'Resultado da consulta da ', depois: '' },
-  ] },
-  { periodo: 'Esta semana', itens: [
-    { id: '3', icone: '🎪', destaque: '', antes: 'Bazar da ONG no sábado, 08/11, às 9h', depois: '' },
-  ] },
-];
-
 export default function NotificationsScreen({ navigation }) {
+  const { notificacoes, marcarComoLida } = useNotificacoes();
+  const grupos = [...new Set(notificacoes.map((item) => item.grupo))];
+
+  // Marca como lida e leva direto ao conteúdo citado
+  const abrir = (item) => {
+    marcarComoLida(item.id);
+    const { tela, params } = item.destino;
+    if (tela === 'MainTabs') navigation.popTo(tela, params);
+    else navigation.navigate(tela, params);
+  };
+
   return (
     <Screen>
       <ScreenHeader
@@ -27,14 +29,19 @@ export default function NotificationsScreen({ navigation }) {
         }
       />
       <ScrollView contentContainerStyle={styles.content}>
-        {NOTIFICACOES.map((grupo) => (
-          <View key={grupo.periodo}>
-            <Text style={styles.dateLabel}>{grupo.periodo}</Text>
-            {grupo.itens.map((item) => (
-              <View key={item.id} style={styles.card}>
+        {notificacoes.length === 0 ? <Text style={styles.empty}>Nenhuma notificação por aqui. Confira o que você escolheu receber na engrenagem acima.</Text> : null}
+        {grupos.map((grupo) => (
+          <View key={grupo}>
+            <Text style={styles.dateLabel}>{grupo}</Text>
+            {notificacoes.filter((item) => item.grupo === grupo).map((item) => (
+              <TouchableOpacity key={item.id} style={[styles.card, item.lida && styles.cardRead]} onPress={() => abrir(item)}>
                 <Text style={styles.icon}>{item.icone}</Text>
-                <Text style={styles.text}>{item.antes}<Text style={typography.bold}>{item.destaque}</Text>{item.depois}</Text>
-              </View>
+                <View style={styles.info}>
+                  <Text style={styles.text}>{item.antes}<Text style={typography.bold}>{item.destaque}</Text>{item.depois}</Text>
+                  <Text style={styles.time}>{item.quando}</Text>
+                </View>
+                {item.lida ? null : <View style={styles.unreadDot} accessibilityLabel="Não lida" />}
+              </TouchableOpacity>
             ))}
           </View>
         ))}
@@ -45,8 +52,13 @@ export default function NotificationsScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   content: { padding: 16 },
+  empty: { ...typography.body, color: colors.textMuted, textAlign: 'center', marginTop: 24 },
   dateLabel: { ...typography.body, color: colors.textMuted, marginTop: 16, marginBottom: 8 },
   card: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.primaryLight, padding: 16, borderRadius: 12, marginBottom: 12 },
+  cardRead: { backgroundColor: colors.background, borderWidth: 1, borderColor: colors.border },
   icon: { fontSize: 20, marginRight: 12 },
-  text: { ...typography.body, flex: 1 },
+  info: { flex: 1 },
+  text: { ...typography.body },
+  time: { ...typography.caption, marginTop: 4 },
+  unreadDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: colors.primary, marginLeft: 12 },
 });

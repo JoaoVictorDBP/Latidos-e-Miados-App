@@ -27,8 +27,9 @@ import CertificatesScreen from './screens/CertificatesScreen';
 import ScheduleVisitScreen from './screens/ScheduleVisitScreen';
 import ONGNewPostScreen from './screens/ONGNewPostScreen';
 import ONGAnimalScreen from './screens/ONGAnimalScreen';
-import ONGNewAnimalScreen from './screens/ONGNewAnimalScreen';
-import ONGEditAnimalScreen from './screens/ONGEditAnimalScreen';
+import ONGAnimalFormScreen from './screens/ONGAnimalFormScreen';
+import HelpScreen from './screens/HelpScreen';
+import AppProviders from './context/AppProviders';
 import { colors } from './theme';
 
 const Stack = createNativeStackNavigator();
@@ -60,8 +61,9 @@ const TELAS = {
   ONGDashboard: ONGDashboardScreen,
   ONGNewPost: ONGNewPostScreen,
   ONGAnimal: ONGAnimalScreen,
-  ONGNewAnimal: ONGNewAnimalScreen,
-  ONGEditAnimal: ONGEditAnimalScreen,
+  ONGNewAnimal: ONGAnimalFormScreen,
+  ONGEditAnimal: ONGAnimalFormScreen,
+  Help: HelpScreen,
 };
 
 function MainTabs() {
@@ -82,13 +84,15 @@ function MainTabs() {
 export default function App() {
   return (
     <SafeAreaProvider>
-      <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
-          {Object.entries(TELAS).map(([name, component]) => (
-            <Stack.Screen key={name} name={name} component={component} />
-          ))}
-        </Stack.Navigator>
-      </NavigationContainer>
+      <AppProviders>
+        <NavigationContainer>
+          <Stack.Navigator screenOptions={{ headerShown: false }}>
+            {Object.entries(TELAS).map(([name, component]) => (
+              <Stack.Screen key={name} name={name} component={component} />
+            ))}
+          </Stack.Navigator>
+        </NavigationContainer>
+      </AppProviders>
     </SafeAreaProvider>
   );
 }
