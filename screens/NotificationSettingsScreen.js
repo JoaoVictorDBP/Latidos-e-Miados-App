@@ -1,52 +1,42 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Switch } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
+import { View, Text, StyleSheet, Switch } from 'react-native';
+import Screen from '../components/Screen';
+import ScreenHeader from '../components/ScreenHeader';
+import ListRow from '../components/ListRow';
+import { colors, typography } from '../theme';
 
-export default function NotificationSettingsScreen({ navigation }) {
-  const [settings, setSettings] = useState({
-    fotos: true, saude: true, pagamentos: true, eventos: true
-  });
+const OPCOES = [
+  { id: 'fotos', titulo: 'Novas fotos e vídeos dos afilhados' },
+  { id: 'saude', titulo: 'Atualizações de saúde' },
+  { id: 'pagamentos', titulo: 'Pagamentos' },
+  { id: 'eventos', titulo: 'Eventos da ONG' },
+];
 
-  const toggleSwitch = (key) => setSettings(prev => ({ ...prev, [key]: !prev[key] }));
+export default function NotificationSettingsScreen() {
+  const [ativas, setAtivas] = useState({ fotos: true, saude: true, pagamentos: true, eventos: true });
+
+  const alternar = (id) => setAtivas((atual) => ({ ...atual, [id]: !atual[id] }));
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}><Ionicons name="arrow-back" size={24} color="#333" style={styles.backText} /></TouchableOpacity>
-        <Text style={styles.title}>Escolher o que receber</Text>
-      </View>
+    <Screen>
+      <ScreenHeader title="Escolher o que receber" />
       <View style={styles.content}>
         <Text style={styles.subtitle}>Escolha quais notificações você quer receber no celular:</Text>
-        
-        <View style={styles.settingRow}>
-          <Text style={styles.settingLabel}>Novas fotos e vídeos dos afilhados</Text>
-          <Switch value={settings.fotos} onValueChange={() => toggleSwitch('fotos')} trackColor={{ true: '#E67E22' }} />
-        </View>
-        <View style={styles.settingRow}>
-          <Text style={styles.settingLabel}>Atualizações de saúde</Text>
-          <Switch value={settings.saude} onValueChange={() => toggleSwitch('saude')} trackColor={{ true: '#E67E22' }} />
-        </View>
-        <View style={styles.settingRow}>
-          <Text style={styles.settingLabel}>Pagamentos</Text>
-          <Switch value={settings.pagamentos} onValueChange={() => toggleSwitch('pagamentos')} trackColor={{ true: '#E67E22' }} />
-        </View>
-        <View style={styles.settingRow}>
-          <Text style={styles.settingLabel}>Eventos da ONG</Text>
-          <Switch value={settings.eventos} onValueChange={() => toggleSwitch('eventos')} trackColor={{ true: '#E67E22' }} />
-        </View>
+        {OPCOES.map((opcao) => (
+          <ListRow
+            key={opcao.id}
+            label={opcao.titulo}
+            labelStyle={styles.label}
+            right={<Switch value={ativas[opcao.id]} onValueChange={() => alternar(opcao.id)} trackColor={{ true: colors.primary }} accessibilityLabel={opcao.titulo} />}
+          />
+        ))}
       </View>
-    </SafeAreaView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  header: { flexDirection: 'row', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: '#eee' },
-  backText: { fontSize: 24, marginRight: 16 },
-  title: { fontSize: 20, fontWeight: 'bold' },
   content: { padding: 24 },
-  subtitle: { fontSize: 14, color: '#666', marginBottom: 24 },
-  settingRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: '#eee' },
-  settingLabel: { fontSize: 16, color: '#333' }
+  subtitle: { ...typography.body, color: colors.textMuted, marginBottom: 24 },
+  label: { fontSize: 16 },
 });

@@ -1,59 +1,58 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, ScrollView } from 'react-native';
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { View, Text, StyleSheet, Image, TextInput, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import Screen from '../components/Screen';
+import OverlayButton from '../components/OverlayButton';
+import Button from '../components/Button';
+import { colors, typography } from '../theme';
 
-export default function PostScreen({ navigation }) {
-  const insets = useSafeAreaInsets();
+const COMENTARIOS = [
+  { id: '1', autor: 'Carla', texto: 'que lindo, força Bolinha!' },
+  { id: '2', autor: 'Ana (ONG)', texto: 'ele mandou lambeijo pra madrinha 🐶' },
+];
 
+export default function PostScreen() {
   return (
-    <SafeAreaView style={styles.container} edges={['left', 'right', 'bottom']}>
+    <Screen edges={['left', 'right', 'bottom']}>
       <ScrollView>
-        <View style={styles.imageContainer}>
+        <View>
           <Image source={require('../assets/images/bolinha.jpg')} style={styles.image} />
           <View style={styles.playOverlay} pointerEvents="none">
-            <View style={styles.playCircle}><Ionicons name="play" size={24} color="#fff" /></View>
+            <View style={styles.playCircle}><Ionicons name="play" size={24} color={colors.white} /></View>
           </View>
-          <TouchableOpacity style={[styles.closeButton, { top: insets.top + 12 }]} onPress={() => navigation.goBack()}>
-            <Ionicons name="close" size={22} color="#fff" />
-          </TouchableOpacity>
+          <OverlayButton icon="close" dark accessibilityLabel="Fechar" />
         </View>
+
         <View style={styles.content}>
-          <Text style={styles.postInfo}><Text style={styles.bold}>Bolinha</Text> - 02/11/2026 - Saúde</Text>
+          <Text style={styles.postInfo}><Text style={typography.bold}>Bolinha</Text> - 02/11/2026 - Saúde</Text>
           <Text style={styles.postText}>Primeiro dia sem mancar depois do remédio novo! 🐾</Text>
-          
-          <Text style={styles.sectionTitle}>Comentários</Text>
-          <View style={styles.comment}>
-            <Text><Text style={styles.bold}>Carla</Text> que lindo, força Bolinha!</Text>
-          </View>
-          <View style={styles.comment}>
-            <Text><Text style={styles.bold}>Ana (ONG)</Text> ele mandou lambeijo pra madrinha 🐶</Text>
-          </View>
+
+          <Text style={[typography.sectionTitle, styles.sectionTitle]}>Comentários</Text>
+          {COMENTARIOS.map((comentario) => (
+            <Text key={comentario.id} style={styles.comment}>
+              <Text style={typography.bold}>{comentario.autor}</Text> {comentario.texto}
+            </Text>
+          ))}
         </View>
       </ScrollView>
+
       <View style={styles.footer}>
         <TextInput style={styles.input} placeholder="Escreva um comentário..." />
-        <TouchableOpacity style={styles.sendButton}><Text style={styles.sendText}>Enviar</Text></TouchableOpacity>
+        <Button title="Enviar" size="small" />
       </View>
-    </SafeAreaView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  imageContainer: { position: 'relative' },
   image: { width: '100%', height: 400, resizeMode: 'cover' },
   playOverlay: { position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, alignItems: 'center', justifyContent: 'center' },
-  playCircle: { width: 64, height: 64, borderRadius: 32, backgroundColor: 'rgba(0,0,0,0.5)', alignItems: 'center', justifyContent: 'center' },
-  closeButton: { position: 'absolute', left: 16, backgroundColor: 'rgba(0,0,0,0.5)', borderRadius: 20, width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
+  playCircle: { width: 64, height: 64, borderRadius: 32, backgroundColor: colors.overlay, alignItems: 'center', justifyContent: 'center' },
   content: { padding: 24 },
-  postInfo: { fontSize: 12, color: '#666', marginBottom: 8 },
-  bold: { fontWeight: 'bold' },
-  postText: { fontSize: 16, color: '#333', marginBottom: 24 },
-  sectionTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 16 },
-  comment: { marginBottom: 12 },
-  footer: { flexDirection: 'row', padding: 16, borderTopWidth: 1, borderTopColor: '#eee', alignItems: 'center' },
-  input: { flex: 1, backgroundColor: '#f0f0f0', borderRadius: 20, paddingHorizontal: 16, paddingVertical: 10, marginRight: 12 },
-  sendButton: { backgroundColor: '#E67E22', paddingHorizontal: 16, paddingVertical: 10, borderRadius: 20 },
-  sendText: { color: '#fff', fontWeight: 'bold' }
+  postInfo: { ...typography.caption, marginBottom: 8 },
+  postText: { fontSize: 16, color: colors.text, marginBottom: 24 },
+  sectionTitle: { marginBottom: 16 },
+  comment: { ...typography.body, marginBottom: 12 },
+  footer: { flexDirection: 'row', padding: 16, borderTopWidth: 1, borderTopColor: colors.border, alignItems: 'center' },
+  input: { flex: 1, backgroundColor: colors.muted, borderRadius: 20, paddingHorizontal: 16, paddingVertical: 10, marginRight: 12 },
 });

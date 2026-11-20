@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Image } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
+import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
+import Screen from '../components/Screen';
+import ScreenHeader from '../components/ScreenHeader';
+import Button from '../components/Button';
+import RadioCard from '../components/RadioCard';
+import { FORMAS_PAGAMENTO } from '../data/pagamentos';
+import { colors, typography } from '../theme';
 
 export default function PaymentScreen({ navigation, route }) {
   const [pagamento, setPagamento] = useState('pix');
   const valor = route.params?.valor ?? 'R$ 50,00';
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="#333" style={styles.backText} />
-        </TouchableOpacity>
-        <Text style={styles.title}>Pagamento</Text>
-      </View>
+    <Screen>
+      <ScreenHeader title="Pagamento" bordered={false} />
+
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.summaryCard}>
           <Image source={require('../assets/images/bolinha-card.jpg')} style={styles.avatar} />
@@ -24,63 +24,31 @@ export default function PaymentScreen({ navigation, route }) {
           </View>
         </View>
 
-        <Text style={styles.sectionTitle}>Forma de pagamento</Text>
-        
-        {['pix', 'cartao', 'boleto'].map((method) => (
-          <TouchableOpacity 
-            key={method} 
-            style={[styles.paymentOption, pagamento === method && styles.paymentOptionSelected]}
-            onPress={() => setPagamento(method)}
-          >
-            <View style={[styles.radio, pagamento === method && styles.radioSelected]}>
-              {pagamento === method && <View style={styles.radioInner} />}
-            </View>
-            <View>
-              <Text style={styles.paymentTitle}>
-                {method === 'pix' ? 'Pix' : method === 'cartao' ? 'Cartão de crédito' : 'Boleto'}
-              </Text>
-              <Text style={styles.paymentSubtitle}>
-                {method === 'pix' ? 'Cobrança automática: autorize no app do banco' : method === 'cartao' ? 'Cobrança mensal no cartão' : 'Enviado por e-mail todo mês'}
-              </Text>
-            </View>
-          </TouchableOpacity>
+        <Text style={[typography.sectionTitle, styles.sectionTitle]}>Forma de pagamento</Text>
+        {FORMAS_PAGAMENTO.map((forma) => (
+          <RadioCard key={forma.id} title={forma.nome} description={forma.descricao} selected={pagamento === forma.id} onPress={() => setPagamento(forma.id)} />
         ))}
-        
+
         <Text style={styles.infoText}>Você pode alterar, pausar ou cancelar quando quiser, no seu perfil.</Text>
-        <Text style={styles.processedBy}>Pagamento processado por</Text>
+        <Text style={styles.infoText}>Pagamento processado por</Text>
         <Image source={require('../assets/images/mercadopago.png')} style={styles.processor} accessibilityLabel="Mercado Pago" />
       </ScrollView>
+
       <View style={styles.footer}>
-        <TouchableOpacity style={styles.primaryButton} onPress={() => navigation.navigate('Confirmation')}>
-          <Text style={styles.primaryButtonText}>Confirmar {valor}/mês</Text>
-        </TouchableOpacity>
+        <Button title={'Confirmar ' + valor + '/mês'} onPress={() => navigation.navigate('Confirmation')} />
       </View>
-    </SafeAreaView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  header: { flexDirection: 'row', alignItems: 'center', padding: 16 },
-  backText: { fontSize: 24, marginRight: 16 },
-  title: { fontSize: 20, fontWeight: 'bold' },
   content: { padding: 24 },
-  summaryCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#f9f9f9', padding: 16, borderRadius: 12, marginBottom: 24 },
+  summaryCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.surface, padding: 16, borderRadius: 12, marginBottom: 24 },
   avatar: { width: 40, height: 40, borderRadius: 20, marginRight: 12 },
-  summaryTitle: { fontSize: 16, fontWeight: 'bold' },
-  summarySubtitle: { fontSize: 14, color: '#666' },
-  sectionTitle: { fontSize: 18, fontWeight: 'bold', marginBottom: 16 },
-  paymentOption: { flexDirection: 'row', alignItems: 'center', padding: 16, borderWidth: 1, borderColor: '#eee', borderRadius: 12, marginBottom: 12 },
-  paymentOptionSelected: { borderColor: '#E67E22', backgroundColor: '#FFF5EB' },
-  radio: { width: 20, height: 20, borderRadius: 10, borderWidth: 2, borderColor: '#ccc', marginRight: 16, justifyContent: 'center', alignItems: 'center' },
-  radioSelected: { borderColor: '#E67E22' },
-  radioInner: { width: 10, height: 10, borderRadius: 5, backgroundColor: '#E67E22' },
-  paymentTitle: { fontSize: 16, fontWeight: 'bold' },
-  paymentSubtitle: { fontSize: 12, color: '#666', marginTop: 4, paddingRight: 32 },
-  infoText: { fontSize: 12, color: '#666', textAlign: 'center', marginTop: 16 },
-  processedBy: { fontSize: 12, color: '#666', textAlign: 'center', marginTop: 16 },
+  summaryTitle: { fontSize: 16, fontWeight: 'bold', color: colors.text },
+  summarySubtitle: { fontSize: 14, color: colors.textMuted },
+  sectionTitle: { marginBottom: 16 },
+  infoText: { ...typography.caption, textAlign: 'center', marginTop: 16 },
   processor: { width: 169, height: 32, alignSelf: 'center', marginTop: 8, resizeMode: 'contain' },
   footer: { padding: 24 },
-  primaryButton: { backgroundColor: '#E67E22', paddingVertical: 16, borderRadius: 30, alignItems: 'center' },
-  primaryButtonText: { color: '#fff', fontSize: 16, fontWeight: 'bold' }
 });

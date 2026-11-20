@@ -1,61 +1,44 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
-
-const ANIMAL = {
-  foto: require('../assets/images/zeca.jpg'),
-  nome: 'Zeca',
-  especie: 'Gato',
-  idade: '1 ano',
-  historia: 'Resgatado ainda filhote perto de um mercado da cidade. Hoje vive na sede da ONG e adora dormir em cima do saco de ração.',
-};
+import Screen from '../components/Screen';
+import ScreenHeader from '../components/ScreenHeader';
+import Button from '../components/Button';
+import PostHeader from '../components/PostHeader';
+import { ANIMAL_ONG } from '../data/animais';
+import { colors, typography } from '../theme';
 
 export default function ONGAnimalScreen({ navigation, route }) {
-  const animal = route.params?.animal ?? ANIMAL;
+  const animal = route.params?.animal ?? ANIMAL_ONG;
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}><Ionicons name="arrow-back" size={24} color="#333" style={styles.backText} /></TouchableOpacity>
-        <Text style={styles.title}>{animal.nome}</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('ONGEditAnimal', { animal })}><Text style={styles.editText}>Editar</Text></TouchableOpacity>
-      </View>
+    <Screen>
+      <ScreenHeader
+        title={animal.nome}
+        right={
+          <TouchableOpacity onPress={() => navigation.navigate('ONGEditAnimal', { animal })}>
+            <Text style={styles.editText}>Editar</Text>
+          </TouchableOpacity>
+        }
+      />
       <ScrollView contentContainerStyle={styles.content}>
-        <TouchableOpacity style={styles.primaryButton}><Text style={styles.primaryButtonText}>+ Novo post para {animal.nome}</Text></TouchableOpacity>
+        <Button title={'+ Novo post para ' + animal.nome} style={styles.newPostButton} />
 
         <View style={styles.post}>
-          <View style={styles.postHeader}>
-            <Image source={animal.foto} style={styles.avatar} />
-            <Text style={styles.postAuthor}>{animal.nome}</Text>
-            <Text style={styles.badge}>Dia a dia</Text>
-            <Text style={styles.date}>24/10/2026</Text>
-          </View>
+          <PostHeader avatar={animal.foto} autor={animal.nome} categoria="Dia a dia" data="24/10/2026" />
           <Image source={require('../assets/images/post-zeca.jpg')} style={styles.postImage} />
           <Text style={styles.postText}>Dormiu a tarde inteira em cima do saco de ração 😴</Text>
-          <Text style={styles.comments}>💬 0 comentários</Text>
+          <Text style={typography.caption}>💬 0 comentários</Text>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 16, borderBottomWidth: 1, borderBottomColor: '#eee' },
-  backText: { fontSize: 24 },
-  title: { fontSize: 20, fontWeight: 'bold' },
-  editText: { color: '#E67E22', fontWeight: 'bold' },
+  editText: { color: colors.primary, fontWeight: 'bold' },
   content: { padding: 16 },
-  primaryButton: { backgroundColor: '#E67E22', paddingVertical: 12, borderRadius: 30, alignItems: 'center', marginBottom: 24 },
-  primaryButtonText: { color: '#fff', fontWeight: 'bold' },
-  post: { marginBottom: 24, borderWidth: 1, borderColor: '#eee', padding: 16, borderRadius: 12 },
-  postHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 12 },
-  avatar: { width: 32, height: 32, borderRadius: 16, marginRight: 8 },
-  postAuthor: { fontWeight: 'bold', fontSize: 16, marginRight: 8 },
-  badge: { backgroundColor: '#f0f0f0', color: '#666', fontSize: 10, paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4, marginRight: 'auto' },
-  date: { color: '#999', fontSize: 12 },
+  newPostButton: { paddingVertical: 12, marginBottom: 24 },
+  post: { marginBottom: 24, borderWidth: 1, borderColor: colors.border, padding: 16, borderRadius: 12 },
   postImage: { width: '100%', height: 200, borderRadius: 8, marginBottom: 12 },
-  postText: { fontSize: 14, color: '#333', marginBottom: 8 },
-  comments: { color: '#666', fontSize: 12 }
+  postText: { ...typography.body, marginBottom: 8 },
 });

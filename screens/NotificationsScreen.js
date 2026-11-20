@@ -1,45 +1,52 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
+import Screen from '../components/Screen';
+import ScreenHeader from '../components/ScreenHeader';
+import { colors, typography } from '../theme';
+
+const NOTIFICACOES = [
+  { periodo: 'Hoje', itens: [
+    { id: '1', icone: '🐾', destaque: 'Bolinha', antes: '', depois: ' tem um vídeo novo!' },
+    { id: '2', icone: '🩺', destaque: 'Tieta', antes: 'Resultado da consulta da ', depois: '' },
+  ] },
+  { periodo: 'Esta semana', itens: [
+    { id: '3', icone: '🎪', destaque: '', antes: 'Bazar da ONG no sábado, 08/11, às 9h', depois: '' },
+  ] },
+];
 
 export default function NotificationsScreen({ navigation }) {
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}><Ionicons name="arrow-back" size={24} color="#333" style={styles.backText} /></TouchableOpacity>
-        <Text style={styles.title}>Notificações</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('NotificationSettings')}><Ionicons name="settings-outline" size={24} color="#333" /></TouchableOpacity>
-      </View>
+    <Screen>
+      <ScreenHeader
+        title="Notificações"
+        right={
+          <TouchableOpacity onPress={() => navigation.navigate('NotificationSettings')} accessibilityLabel="Configurar notificações">
+            <Ionicons name="settings-outline" size={24} color={colors.text} />
+          </TouchableOpacity>
+        }
+      />
       <ScrollView contentContainerStyle={styles.content}>
-        <Text style={styles.dateLabel}>Hoje</Text>
-        <View style={styles.notificationCard}>
-          <Text style={styles.icon}>🐾</Text>
-          <Text style={styles.notificationText}><Text style={styles.bold}>Bolinha</Text> tem um vídeo novo!</Text>
-        </View>
-        <View style={styles.notificationCard}>
-          <Text style={styles.icon}>🩺</Text>
-          <Text style={styles.notificationText}>Resultado da consulta da <Text style={styles.bold}>Tieta</Text></Text>
-        </View>
-        <Text style={styles.dateLabel}>Esta semana</Text>
-        <View style={styles.notificationCard}>
-          <Text style={styles.icon}>🎪</Text>
-          <Text style={styles.notificationText}>Bazar da ONG no sábado, 08/11, às 9h</Text>
-        </View>
+        {NOTIFICACOES.map((grupo) => (
+          <View key={grupo.periodo}>
+            <Text style={styles.dateLabel}>{grupo.periodo}</Text>
+            {grupo.itens.map((item) => (
+              <View key={item.id} style={styles.card}>
+                <Text style={styles.icon}>{item.icone}</Text>
+                <Text style={styles.text}>{item.antes}<Text style={typography.bold}>{item.destaque}</Text>{item.depois}</Text>
+              </View>
+            ))}
+          </View>
+        ))}
       </ScrollView>
-    </SafeAreaView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', padding: 16, borderBottomWidth: 1, borderBottomColor: '#eee' },
-  backText: { fontSize: 24 },
-  title: { fontSize: 20, fontWeight: 'bold' },
   content: { padding: 16 },
-  dateLabel: { fontSize: 14, color: '#666', marginTop: 16, marginBottom: 8 },
-  notificationCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#FFF5EB', padding: 16, borderRadius: 12, marginBottom: 12 },
+  dateLabel: { ...typography.body, color: colors.textMuted, marginTop: 16, marginBottom: 8 },
+  card: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.primaryLight, padding: 16, borderRadius: 12, marginBottom: 12 },
   icon: { fontSize: 20, marginRight: 12 },
-  notificationText: { fontSize: 14, color: '#333', flex: 1 },
-  bold: { fontWeight: 'bold' }
+  text: { ...typography.body, flex: 1 },
 });

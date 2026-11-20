@@ -1,56 +1,43 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, TextInput } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import Screen from '../components/Screen';
+import ScreenHeader from '../components/ScreenHeader';
+import Button from '../components/Button';
+import TextField from '../components/TextField';
+import { colors } from '../theme';
+import { ongFormStyles } from '../styles/ongForm';
 
-export default function ONGNewAnimalScreen({ navigation }) {
+export default function ONGNewAnimalScreen() {
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}><Ionicons name="arrow-back" size={24} color="#333" style={styles.backText} /></TouchableOpacity>
-        <Text style={styles.title}>Novo animal</Text>
-      </View>
-      <ScrollView contentContainerStyle={styles.content}>
-        
+    <Screen>
+      <ScreenHeader title="Novo animal" />
+      <ScrollView contentContainerStyle={ongFormStyles.content}>
         <TouchableOpacity style={styles.photoUpload}>
           <Text style={styles.cameraIcon}>📷</Text>
           <Text style={styles.photoText}>Adicionar fotos e vídeos</Text>
         </TouchableOpacity>
 
-        <Text style={styles.label}>Nome *</Text>
-        <TextInput style={styles.input} />
+        <TextField variant="boxed" label="Nome *" />
 
-        <Text style={styles.label}>Espécie *</Text>
-        <View style={styles.dropdown}><Text>Cachorro</Text><Ionicons name="chevron-down" size={16} color="#666" /></View>
+        <Text style={ongFormStyles.label}>Espécie *</Text>
+        <View style={ongFormStyles.dropdown}>
+          <Text>Cachorro</Text>
+          <Ionicons name="chevron-down" size={16} color={colors.textMuted} />
+        </View>
 
-        <Text style={styles.label}>Idade *</Text>
-        <TextInput style={styles.input} placeholder="ex.: 3 anos" />
-
-        <Text style={styles.label}>História do resgate *</Text>
-        <TextInput style={[styles.input, styles.textArea]} multiline />
-
+        <TextField variant="boxed" label="Idade *" placeholder="ex.: 3 anos" />
+        <TextField variant="boxed" label="História do resgate *" multiline inputStyle={ongFormStyles.textArea} />
       </ScrollView>
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.primaryButton}><Text style={styles.primaryButtonText}>Salvar</Text></TouchableOpacity>
+      <View style={ongFormStyles.footer}>
+        <Button title="Salvar" />
       </View>
-    </SafeAreaView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#fff' },
-  header: { flexDirection: 'row', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: '#eee' },
-  backText: { fontSize: 24, marginRight: 16 },
-  title: { fontSize: 20, fontWeight: 'bold' },
-  content: { padding: 24 },
-  photoUpload: { backgroundColor: '#f9f9f9', borderWidth: 1, borderColor: '#ddd', borderStyle: 'dashed', borderRadius: 12, padding: 32, alignItems: 'center', marginBottom: 24 },
+  photoUpload: { backgroundColor: colors.surface, borderWidth: 1, borderColor: '#ddd', borderStyle: 'dashed', borderRadius: 12, padding: 32, alignItems: 'center', marginBottom: 24 },
   cameraIcon: { fontSize: 32, marginBottom: 8 },
-  photoText: { color: '#666' },
-  label: { fontSize: 14, fontWeight: 'bold', color: '#333', marginBottom: 8, marginTop: 12 },
-  input: { borderWidth: 1, borderColor: '#ccc', borderRadius: 8, padding: 12, backgroundColor: '#f9f9f9' },
-  dropdown: { flexDirection: 'row', justifyContent: 'space-between', padding: 12, borderWidth: 1, borderColor: '#ccc', borderRadius: 8, backgroundColor: '#f9f9f9' },
-  textArea: { height: 100, textAlignVertical: 'top' },
-  footer: { padding: 24 },
-  primaryButton: { backgroundColor: '#E67E22', paddingVertical: 16, borderRadius: 30, alignItems: 'center' },
-  primaryButtonText: { color: '#fff', fontWeight: 'bold' }
+  photoText: { color: colors.textMuted },
 });

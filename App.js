@@ -20,7 +20,6 @@ import ManageSponsorshipScreen from './screens/ManageSponsorshipScreen';
 import NotificationsScreen from './screens/NotificationsScreen';
 import ONGDashboardScreen from './screens/ONGDashBoardScreen';
 
-// Telas novas
 import PaymentScreen from './screens/PaymentScreen';
 import PostScreen from './screens/PostScreen';
 import NotificationSettingsScreen from './screens/NotificationSettingsScreen';
@@ -30,17 +29,52 @@ import ONGNewPostScreen from './screens/ONGNewPostScreen';
 import ONGAnimalScreen from './screens/ONGAnimalScreen';
 import ONGNewAnimalScreen from './screens/ONGNewAnimalScreen';
 import ONGEditAnimalScreen from './screens/ONGEditAnimalScreen';
+import { colors } from './theme';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
+const ABAS = [
+  { name: 'Inicio', component: HomeScreen, titulo: 'Início', icone: 'home-outline' },
+  { name: 'MeusAfilhados', component: FeedScreen, titulo: 'Meus afilhados', icone: 'heart-outline' },
+  { name: 'Transparencia', component: TransparenciaScreen, titulo: 'Transparência', icone: 'eye-outline' },
+  { name: 'PerfilTab', component: UserProfileScreen, titulo: 'Perfil', icone: 'person-outline' },
+];
+
+const TELAS = {
+  Welcome: WelcomeScreen,
+  Login: LoginScreen,
+  SignUp: SignUpScreen,
+  ForgotPassword: ForgotPasswordScreen,
+  MainTabs: MainTabs,
+  AnimalProfile: AnimalProfileScreen,
+  DonationValue: DonationValueScreen,
+  Payment: PaymentScreen,
+  Confirmation: ConfirmationScreen,
+  ManageSponsorship: ManageSponsorshipScreen,
+  Notifications: NotificationsScreen,
+  NotificationSettings: NotificationSettingsScreen,
+  Certificates: CertificatesScreen,
+  ScheduleVisit: ScheduleVisitScreen,
+  Post: PostScreen,
+  ONGDashboard: ONGDashboardScreen,
+  ONGNewPost: ONGNewPostScreen,
+  ONGAnimal: ONGAnimalScreen,
+  ONGNewAnimal: ONGNewAnimalScreen,
+  ONGEditAnimal: ONGEditAnimalScreen,
+};
+
 function MainTabs() {
   return (
-    <Tab.Navigator screenOptions={{ headerShown: false, tabBarActiveTintColor: '#E67E22', tabBarInactiveTintColor: '#999' }}>
-      <Tab.Screen name="Inicio" component={HomeScreen} options={{ tabBarLabel: 'Início', tabBarIcon: ({ color, size }) => <Ionicons name="home-outline" color={color} size={size} /> }} />
-      <Tab.Screen name="MeusAfilhados" component={FeedScreen} options={{ tabBarLabel: 'Meus afilhados', tabBarIcon: ({ color, size }) => <Ionicons name="heart-outline" color={color} size={size} /> }} />
-      <Tab.Screen name="Transparencia" component={TransparenciaScreen} options={{ tabBarLabel: 'Transparência', tabBarIcon: ({ color, size }) => <Ionicons name="eye-outline" color={color} size={size} /> }} />
-      <Tab.Screen name="PerfilTab" component={UserProfileScreen} options={{ tabBarLabel: 'Perfil', tabBarIcon: ({ color, size }) => <Ionicons name="person-outline" color={color} size={size} /> }} />
+    <Tab.Navigator screenOptions={{ headerShown: false, tabBarActiveTintColor: colors.primary, tabBarInactiveTintColor: colors.textLight }}>
+      {ABAS.map((aba) => (
+        <Tab.Screen
+          key={aba.name}
+          name={aba.name}
+          component={aba.component}
+          options={{ tabBarLabel: aba.titulo, tabBarIcon: ({ color, size }) => <Ionicons name={aba.icone} color={color} size={size} /> }}
+        />
+      ))}
     </Tab.Navigator>
   );
 }
@@ -50,26 +84,9 @@ export default function App() {
     <SafeAreaProvider>
       <NavigationContainer>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Welcome" component={WelcomeScreen} />
-          <Stack.Screen name="Login" component={LoginScreen} />
-          <Stack.Screen name="SignUp" component={SignUpScreen} />
-          <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
-          <Stack.Screen name="MainTabs" component={MainTabs} />
-          <Stack.Screen name="AnimalProfile" component={AnimalProfileScreen} />
-          <Stack.Screen name="DonationValue" component={DonationValueScreen} />
-          <Stack.Screen name="Payment" component={PaymentScreen} />
-          <Stack.Screen name="Confirmation" component={ConfirmationScreen} />
-          <Stack.Screen name="ManageSponsorship" component={ManageSponsorshipScreen} />
-          <Stack.Screen name="Notifications" component={NotificationsScreen} />
-          <Stack.Screen name="NotificationSettings" component={NotificationSettingsScreen} />
-          <Stack.Screen name="Certificates" component={CertificatesScreen} />
-          <Stack.Screen name="ScheduleVisit" component={ScheduleVisitScreen} />
-          <Stack.Screen name="Post" component={PostScreen} />
-          <Stack.Screen name="ONGDashboard" component={ONGDashboardScreen} />
-          <Stack.Screen name="ONGNewPost" component={ONGNewPostScreen} />
-          <Stack.Screen name="ONGAnimal" component={ONGAnimalScreen} />
-          <Stack.Screen name="ONGNewAnimal" component={ONGNewAnimalScreen} />
-          <Stack.Screen name="ONGEditAnimal" component={ONGEditAnimalScreen} />
+          {Object.entries(TELAS).map(([name, component]) => (
+            <Stack.Screen key={name} name={name} component={component} />
+          ))}
         </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaProvider>
