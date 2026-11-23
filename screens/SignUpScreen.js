@@ -5,6 +5,7 @@ import BackButton from '../components/BackButton';
 import Button from '../components/Button';
 import GoogleButton from '../components/GoogleButton';
 import TextField from '../components/TextField';
+import { useAuth } from '../context/AuthContext';
 import { emailValido } from '../utils/text';
 import { authStyles } from '../styles/auth';
 
@@ -18,6 +19,7 @@ const validar = ({ nome, email, senha, confirmarSenha }) => ({
 export default function SignUpScreen({ navigation }) {
   const [form, setForm] = useState({ nome: '', email: '', senha: '', confirmarSenha: '' });
   const [tentouEnviar, setTentouEnviar] = useState(false);
+  const { login } = useAuth();
 
   const erros = validar(form);
   const erroVisivel = (campo) => (tentouEnviar ? erros[campo] : '');
@@ -27,6 +29,12 @@ export default function SignUpScreen({ navigation }) {
   const handleCadastrar = () => {
     setTentouEnviar(true);
     if (Object.values(erros).some(Boolean)) return;
+    login({ nome: form.nome, email: form.email });
+    navigation.navigate('MainTabs');
+  };
+
+  const handleGoogleAuth = () => {
+    login({ nome: 'Daniel', email: 'daniel@email.com' });
     navigation.navigate('MainTabs');
   };
 
@@ -46,7 +54,7 @@ export default function SignUpScreen({ navigation }) {
 
           <Button title="Criar conta" onPress={handleCadastrar} style={authStyles.spaced} />
           <Text style={authStyles.orText}>ou</Text>
-          <GoogleButton onPress={() => navigation.navigate('MainTabs')} style={authStyles.spaced} />
+          <GoogleButton onPress={handleGoogleAuth} style={authStyles.spaced} />
 
           <TouchableOpacity style={styles.loginLink} onPress={() => navigation.goBack()}>
             <Text style={authStyles.linkText}>Já tem uma conta? <Text style={authStyles.linkTextBold}>Entrar</Text></Text>

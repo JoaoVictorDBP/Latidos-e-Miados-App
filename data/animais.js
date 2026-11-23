@@ -1,10 +1,14 @@
-// Dados mockados dos animais da ONG
+// Dados mockados dos animais da ONG com características estendidas (porte, faixa etária e cuidados)
+
 export const ANIMAIS = [
   {
     id: '1',
     nome: 'Bolinha',
     especie: 'Cachorro',
     idade: '9 anos',
+    faixaEtaria: 'Idoso',
+    porte: 'Médio',
+    cuidadosEspeciais: 'Fisioterapia para pata traseira',
     padrinhos: 3,
     diasSemPost: 1,
     imagem: require('../assets/images/bolinha-card.jpg'),
@@ -16,6 +20,9 @@ export const ANIMAIS = [
     nome: 'Pirata',
     especie: 'Cachorro',
     idade: '1 ano',
+    faixaEtaria: 'Filhote',
+    porte: 'Médio',
+    cuidadosEspeciais: null,
     padrinhos: 0,
     diasSemPost: 4,
     imagem: require('../assets/images/pirata.jpg'),
@@ -26,6 +33,9 @@ export const ANIMAIS = [
     nome: 'Zeca',
     especie: 'Gato',
     idade: '1 ano',
+    faixaEtaria: 'Filhote',
+    porte: 'Pequeno',
+    cuidadosEspeciais: null,
     padrinhos: 5,
     diasSemPost: 10,
     imagem: require('../assets/images/zeca.jpg'),
@@ -36,6 +46,9 @@ export const ANIMAIS = [
     nome: 'Tieta',
     especie: 'Gato',
     idade: '3 anos',
+    faixaEtaria: 'Adulto',
+    porte: 'Pequeno',
+    cuidadosEspeciais: 'Alimentação especial para trato urinário',
     padrinhos: 2,
     diasSemPost: 2,
     imagem: require('../assets/images/tieta.jpg'),
@@ -44,6 +57,8 @@ export const ANIMAIS = [
 ];
 
 export const ESPECIES = ['Cachorro', 'Gato'];
+export const PORTES = ['Todos', 'Pequeno', 'Médio', 'Grande'];
+export const FAIXAS_ETARIAS = ['Todas', 'Filhote', 'Adulto', 'Idoso'];
 
 // Nome curto usado nos cards ("Cão • 9 anos")
 export const ESPECIE_CURTA = { Cachorro: 'Cão', Gato: 'Gato' };

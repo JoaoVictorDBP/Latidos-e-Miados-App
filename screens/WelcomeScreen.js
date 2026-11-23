@@ -2,9 +2,17 @@ import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
 import Screen from '../components/Screen';
 import Button from '../components/Button';
+import { useAuth } from '../context/AuthContext';
 import { typography } from '../theme';
 
 export default function WelcomeScreen({ navigation }) {
+  const { entrarComoVisitante } = useAuth();
+
+  const handleConhecerAnimais = () => {
+    entrarComoVisitante();
+    navigation.navigate('MainTabs');
+  };
+
   return (
     <Screen edges={['left', 'right', 'bottom']}>
       <Image source={require('../assets/images/bolinha.jpg')} style={styles.heroImage} />
@@ -14,7 +22,7 @@ export default function WelcomeScreen({ navigation }) {
         <Text style={styles.title}>Latidos & Miados</Text>
         <Text style={styles.subtitle}>Apadrinhe um animal resgatado e acompanhe o dia a dia dele pelo app.</Text>
 
-        <Button title="Conhecer os animais" onPress={() => navigation.navigate('MainTabs')} style={styles.button} />
+        <Button title="Conhecer os animais" onPress={handleConhecerAnimais} style={styles.button} />
         <Button title="Já tenho uma conta" variant="ghost" onPress={() => navigation.navigate('Login')} style={styles.button} />
       </View>
     </Screen>

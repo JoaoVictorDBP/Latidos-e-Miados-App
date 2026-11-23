@@ -5,6 +5,7 @@ import BackButton from '../components/BackButton';
 import Button from '../components/Button';
 import GoogleButton from '../components/GoogleButton';
 import TextField from '../components/TextField';
+import { useAuth } from '../context/AuthContext';
 import { emailValido } from '../utils/text';
 import { authStyles } from '../styles/auth';
 
@@ -12,11 +13,15 @@ export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [tentouEntrar, setTentouEntrar] = useState(false);
+  const { login } = useAuth();
 
   const erroEmail = tentouEntrar && !emailValido(email) ? 'Informe um e-mail válido' : '';
   const erroSenha = tentouEntrar && !senha ? 'Informe sua senha' : '';
 
-  const irParaApp = () => navigation.navigate('MainTabs');
+  const irParaApp = () => {
+    login({ nome: 'Daniel', email: email || 'daniel@email.com' });
+    navigation.navigate('MainTabs');
+  };
 
   // Simula o login no protótipo, exigindo os campos preenchidos como no cadastro
   const entrar = () => {

@@ -37,6 +37,6 @@ const styles = StyleSheet.create({
   ghost: {},
   ghostText: { color: colors.textMuted, fontWeight: '600' },
 
-  disabled: { backgroundColor: colors.borderStrong, borderColor: colors.borderStrong },
-  disabledText: { color: colors.white },
+  disabled: { backgroundColor: colors.muted, borderColor: colors.borderStrong, borderWidth: 1 },
+  disabledText: { color: colors.textLight },
 });

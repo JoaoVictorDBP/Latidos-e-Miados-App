@@ -4,10 +4,11 @@ import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { colors } from '../theme';
 
+// Item #34: O botão "Modo padrinho" agora utiliza o ícone semântico de troca de perfil (swap-horizontal-outline)
 const ABAS = [
   { id: 'painel', icone: 'grid-outline', titulo: 'Painel', abrir: (navigation) => navigation.popTo('ONGDashboard') },
   { id: 'novoPost', icone: 'add-circle-outline', titulo: 'Novo post', abrir: (navigation) => navigation.navigate('ONGNewPost') },
-  { id: 'sair', icone: 'log-out-outline', titulo: 'Modo padrinho', abrir: (navigation) => navigation.popTo('MainTabs') },
+  { id: 'sair', icone: 'swap-horizontal-outline', titulo: 'Modo padrinho', abrir: (navigation) => navigation.popTo('MainTabs') },
 ];
 
 // Menu inferior das telas do modo ONG
