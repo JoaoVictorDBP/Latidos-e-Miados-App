@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert, KeyboardAvoidingView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert, KeyboardAvoidingView, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import Screen from '../components/Screen';
@@ -8,6 +8,7 @@ import Button from '../components/Button';
 import TextField from '../components/TextField';
 import { ESPECIES } from '../data/animais';
 import { escolherDaGaleria, capturarComCamera } from '../utils/mediaPicker';
+import { avisar } from '../utils/aviso';
 import useConfirmarDescarte from '../hooks/useConfirmarDescarte';
 import { colors } from '../theme';
 import { ongFormStyles } from '../styles/ongForm';
@@ -92,6 +93,11 @@ export default function ONGAnimalFormScreen({ navigation, route }) {
   };
 
   const escolherFoto = () => {
+    // No navegador, o próprio seletor de arquivos já oferece galeria e câmera
+    if (Platform.OS === 'web') {
+      trocarFotoPor(() => escolherDaGaleria(['images']));
+      return;
+    }
     Alert.alert(editando ? 'Trocar foto' : 'Adicionar foto', 'De onde você quer escolher a foto?', [
       { text: 'Cancelar', style: 'cancel' },
       { text: 'Câmera', onPress: () => trocarFotoPor(() => capturarComCamera('images')) },
@@ -113,7 +119,7 @@ export default function ONGAnimalFormScreen({ navigation, route }) {
       animalSalvo[campo] = animal[campo].trim();
     });
     sairSemPerguntar(() => (editando ? navigation.popTo('ONGAnimal', { animal: animalSalvo }) : navigation.goBack()));
-    if (!editando) Alert.alert('Animal cadastrado', animalSalvo.nome + ' já aparece para a equipe da ONG.');
+    if (!editando) avisar('Animal cadastrado', animalSalvo.nome + ' já aparece para a equipe da ONG.');
   };
 
   const rolarParaHistoria = () => {

@@ -16,7 +16,9 @@
       }
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/favicon.png",
+      "name": "Latidos & Miados",
+      "shortName": "Latidos & Miados"
     },
     "plugins": [
       "expo-status-bar",
@@ -37,6 +39,9 @@
           "backgroundColor": "#ffffff"
         }
       ]
-    ]
+    ],
+    "experiments": {
+      "baseUrl": "/latidos"
+    }
   }
 }

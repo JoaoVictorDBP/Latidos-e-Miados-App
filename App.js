@@ -1,5 +1,6 @@
-import React from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import React, { useState } from 'react';
+import { Platform, View, StyleSheet } from 'react-native';
+import { NavigationContainer, createNavigationContainerRef } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
@@ -30,7 +31,10 @@ import ONGNewPostScreen from './screens/ONGNewPostScreen';
 import ONGAnimalScreen from './screens/ONGAnimalScreen';
 import ONGAnimalFormScreen from './screens/ONGAnimalFormScreen';
 import HelpScreen from './screens/HelpScreen';
+import InstallScreen from './screens/InstallScreen';
 import AppProviders from './context/AppProviders';
+import useVoltarDoNavegador from './hooks/useVoltarDoNavegador';
+import { deveMostrarInstalacao } from './utils/instalacaoPwa';
 import { colors } from './theme';
 
 const Stack = createNativeStackNavigator();
@@ -83,18 +87,56 @@ function MainTabs() {
   );
 }
 
-export default function App() {
+// No computador, a versão web fica com largura de celular, centralizada
+function MolduraWeb({ children }) {
+  if (Platform.OS !== 'web') return children;
   return (
-    <SafeAreaProvider>
-      <AppProviders>
-        <NavigationContainer>
-          <Stack.Navigator screenOptions={{ headerShown: false }}>
-            {Object.entries(TELAS).map(([name, component]) => (
-              <Stack.Screen key={name} name={name} component={component} />
-            ))}
-          </Stack.Navigator>
-        </NavigationContainer>
-      </AppProviders>
-    </SafeAreaProvider>
+    <View style={styles.webFundo}>
+      <View style={styles.webCelular}>{children}</View>
+    </View>
   );
 }
+
+const navigationRef = createNavigationContainerRef();
+
+export default function App() {
+  const sincronizarVoltar = useVoltarDoNavegador(navigationRef);
+  // Na web aberta pelo navegador, convida a instalar o app antes de começar
+  const [mostrarInstalacao, setMostrarInstalacao] = useState(deveMostrarInstalacao);
+
+  if (mostrarInstalacao) {
+    return (
+      <MolduraWeb>
+        <SafeAreaProvider>
+          <InstallScreen onContinuar={() => setMostrarInstalacao(false)} />
+        </SafeAreaProvider>
+      </MolduraWeb>
+    );
+  }
+
+  return (
+    <MolduraWeb>
+      <SafeAreaProvider>
+        <AppProviders>
+          <NavigationContainer
+            ref={navigationRef}
+            documentTitle={{ formatter: () => 'Latidos & Miados' }}
+            onReady={sincronizarVoltar}
+            onStateChange={sincronizarVoltar}
+          >
+            <Stack.Navigator screenOptions={{ headerShown: false }}>
+              {Object.entries(TELAS).map(([name, component]) => (
+                <Stack.Screen key={name} name={name} component={component} />
+              ))}
+            </Stack.Navigator>
+          </NavigationContainer>
+        </AppProviders>
+      </SafeAreaProvider>
+    </MolduraWeb>
+  );
+}
+
+const styles = StyleSheet.create({
+  webFundo: { flex: 1, backgroundColor: colors.surface, alignItems: 'center' },
+  webCelular: { flex: 1, width: '100%', maxWidth: 430, backgroundColor: colors.background, overflow: 'hidden', borderLeftWidth: 1, borderRightWidth: 1, borderColor: colors.border },
+});

@@ -42,6 +42,12 @@ export default function ONGNewPostScreen({ navigation, route }) {
 
   // Um único botão de anexar: o seletor nativo do celular oferece as opções
   const abrirOpcoesDeAnexo = () => {
+    // No navegador, o próprio seletor de arquivos já oferece galeria e câmera
+    if (Platform.OS === 'web') {
+      OPCOES_DE_ANEXO.galeria();
+      return;
+    }
+
     if (Platform.OS === 'ios') {
       ActionSheetIOS.showActionSheetWithOptions(
         { options: ['Escolher da galeria', 'Tirar foto', 'Gravar vídeo', 'Cancelar'], cancelButtonIndex: 3 },

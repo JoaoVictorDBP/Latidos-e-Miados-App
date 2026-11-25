@@ -1,4 +1,5 @@
 import { Alert, Linking } from 'react-native';
+import { avisar } from './aviso';
 import * as ImagePicker from 'expo-image-picker';
 
 // Abre a galeria e devolve o arquivo escolhido (ou null se a pessoa desistir)
@@ -7,7 +8,7 @@ export async function escolherDaGaleria(mediaTypes) {
     const resultado = await ImagePicker.launchImageLibraryAsync({ mediaTypes });
     return resultado.canceled ? null : resultado.assets[0];
   } catch (erro) {
-    Alert.alert('Não foi possível abrir a galeria', 'Tente novamente em instantes.');
+    avisar('Não foi possível abrir a galeria', 'Tente novamente em instantes.');
     return null;
   }
 }
@@ -26,7 +27,7 @@ export async function capturarComCamera(mediaType) {
     const resultado = await ImagePicker.launchCameraAsync({ mediaTypes: [mediaType] });
     return resultado.canceled ? null : resultado.assets[0];
   } catch (erro) {
-    Alert.alert('Não foi possível abrir a câmera', 'Tente novamente ou escolha um arquivo da galeria.');
+    avisar('Não foi possível abrir a câmera', 'Tente novamente ou escolha um arquivo da galeria.');
     return null;
   }
 }

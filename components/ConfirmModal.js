@@ -32,7 +32,7 @@ export default function ConfirmModal({ visible, icone, cor, titulo, texto, confi
 
 const styles = StyleSheet.create({
   overlay: { flex: 1, backgroundColor: colors.overlay, justifyContent: 'center', padding: 24 },
-  card: { backgroundColor: colors.background, borderRadius: 16, padding: 24, alignItems: 'center' },
+  card: { backgroundColor: colors.background, borderRadius: 16, padding: 24, alignItems: 'center', width: '100%', maxWidth: 400, alignSelf: 'center' },
   closeButton: { position: 'absolute', top: 12, right: 12 },
   icon: { marginBottom: 12 },
   title: { fontSize: 20, fontWeight: 'bold', color: colors.text, textAlign: 'center', marginBottom: 8 },

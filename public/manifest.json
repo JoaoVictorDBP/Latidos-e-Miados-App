@@ -1,0 +1,17 @@
+{
+  "name": "Latidos & Miados",
+  "short_name": "Latidos",
+  "description": "Apadrinhe um animal resgatado e acompanhe o dia a dia dele.",
+  "lang": "pt-BR",
+  "start_url": "/latidos/",
+  "scope": "/latidos/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FFFFFF",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
