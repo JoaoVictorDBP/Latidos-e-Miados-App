@@ -5,18 +5,20 @@ import Screen from '../components/Screen';
 import ScreenHeader from '../components/ScreenHeader';
 import { ChipGroup } from '../components/Chip';
 import { useNotificacoes } from '../context/NotificacoesContext';
+import { useApadrinhamentos } from '../context/ApadrinhamentosContext';
 import { colors, typography } from '../theme';
 
 const FILTROS_TIPO = ['Todas', 'Meus afilhados', 'Eventos'];
 
 export default function NotificationsScreen({ navigation }) {
   const { notificacoes, marcarComoLida } = useNotificacoes();
+  const { buscarApadrinhamento } = useApadrinhamentos();
   const [filtroTipo, setFiltroTipo] = useState('Todas');
 
   // Filtra as notificações ativas com base no chip selecionado
   const notificacoesFiltradas = notificacoes.filter((item) => {
     if (filtroTipo === 'Meus afilhados') {
-      return item.categoria === 'fotos' || item.categoria === 'saude';
+      return item.categoria === 'fotos' || item.categoria === 'saude' || item.categoria === 'memorial';
     }
     if (filtroTipo === 'Eventos') {
       return item.categoria === 'eventos';
@@ -26,10 +28,17 @@ export default function NotificationsScreen({ navigation }) {
 
   const grupos = [...new Set(notificacoesFiltradas.map((item) => item.grupo))];
 
-  // Marca como lida e leva direto ao conteúdo citado
+  // Marca como lida e leva direto ao conteúdo citado (se memorial já decidido, vai direto para MemorialWall)
   const abrir = (item) => {
     marcarComoLida(item.id);
     const { tela, params } = item.destino;
+    if (tela === 'MemorialChoice') {
+      const apad = buscarApadrinhamento(params?.animalId);
+      if (!apad || apad.status !== 'pausado_memorial') {
+        navigation.navigate('MemorialWall', { animalId: params?.animalId });
+        return;
+      }
+    }
     if (tela === 'MainTabs') navigation.popTo(tela, params);
     else navigation.navigate(tela, params);
   };
@@ -66,16 +75,23 @@ export default function NotificationsScreen({ navigation }) {
         {grupos.map((grupo) => (
           <View key={grupo}>
             <Text style={styles.dateLabel}>{grupo}</Text>
-            {notificacoesFiltradas.filter((item) => item.grupo === grupo).map((item) => (
-              <TouchableOpacity key={item.id} style={[styles.card, item.lida && styles.cardRead]} onPress={() => abrir(item)}>
-                <Text style={styles.icon}>{item.icone}</Text>
-                <View style={styles.info}>
-                  <Text style={styles.text}>{item.antes}<Text style={typography.bold}>{item.destaque}</Text>{item.depois}</Text>
-                  <Text style={styles.time}>{item.quando}</Text>
-                </View>
-                {item.lida ? null : <View style={styles.unreadDot} accessibilityLabel="Não lida" />}
-              </TouchableOpacity>
-            ))}
+            {notificacoesFiltradas.filter((item) => item.grupo === grupo).map((item) => {
+              const isMemorial = item.categoria === 'memorial';
+              return (
+                <TouchableOpacity
+                  key={item.id}
+                  style={[styles.card, isMemorial && styles.cardMemorial, item.lida && styles.cardRead]}
+                  onPress={() => abrir(item)}
+                >
+                  <Text style={styles.icon}>{item.icone}</Text>
+                  <View style={styles.info}>
+                    <Text style={styles.text}>{item.antes}<Text style={typography.bold}>{item.destaque}</Text>{item.depois}</Text>
+                    <Text style={styles.time}>{item.quando}</Text>
+                  </View>
+                  {item.lida ? null : <View style={[styles.unreadDot, isMemorial && styles.unreadDotMemorial]} accessibilityLabel="Não lida" />}
+                </TouchableOpacity>
+              );
+            })}
           </View>
         ))}
       </ScrollView>
@@ -89,10 +105,12 @@ const styles = StyleSheet.create({
   empty: { ...typography.body, color: colors.textMuted, textAlign: 'center', marginTop: 32 },
   dateLabel: { ...typography.body, color: colors.textMuted, marginTop: 12, marginBottom: 8, fontWeight: 'bold' },
   card: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.primaryLight, padding: 16, borderRadius: 12, marginBottom: 12, borderWidth: 1, borderColor: colors.border },
+  cardMemorial: { backgroundColor: colors.surface, borderColor: colors.borderStrong },
   cardRead: { backgroundColor: colors.background, borderWidth: 1, borderColor: colors.border },
   icon: { fontSize: 20, marginRight: 12 },
   info: { flex: 1 },
   text: { ...typography.body },
   time: { ...typography.caption, marginTop: 4 },
   unreadDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: colors.primary, marginLeft: 12 },
+  unreadDotMemorial: { backgroundColor: colors.textMuted },
 });

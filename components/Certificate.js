@@ -1,13 +1,20 @@
 import React from 'react';
 import { Text, Image, StyleSheet, View } from 'react-native';
+import MemorialImage from './MemorialImage';
 import { colors } from '../theme';
 
-// Certificado de apadrinhamento. "large" é a versão de destaque da confirmação
-export default function Certificate({ padrinho, animal, imagem, desde, large = false, children }) {
+// Certificado de apadrinhamento. "large" é a versão de destaque da confirmação; "memorial" renderiza a foto em P&B
+export default function Certificate({ padrinho, animal, imagem, desde, large = false, memorial = false, children }) {
+  const imgStyle = [styles.image, large && styles.imageLarge];
+
   return (
     <View style={styles.certificate}>
       <Text style={[styles.header, large && styles.headerLarge]}>CERTIFICADO DE APADRINHAMENTO</Text>
-      <Image source={imagem} style={[styles.image, large && styles.imageLarge]} />
+      {memorial ? (
+        <MemorialImage source={imagem} style={imgStyle} />
+      ) : (
+        <Image source={imagem} style={imgStyle} />
+      )}
       <Text style={styles.names}>{padrinho} ♡ {animal}</Text>
       <Text style={styles.date}>desde {desde}</Text>
       {children}

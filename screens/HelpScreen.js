@@ -14,8 +14,7 @@ const PERGUNTAS = [
   { pergunta: 'O que acontece quando eu pauso?', resposta: 'A próxima cobrança é pulada e volta sozinha no mês seguinte. Você continua recebendo as novidades do seu afilhado.' },
   { pergunta: 'Como cancelo um apadrinhamento?', resposta: 'Em Perfil > Meus apadrinhamentos, toque no afilhado e depois em "Cancelar apadrinhamento". Nenhuma cobrança nova é feita depois disso.' },
   { pergunta: 'Posso visitar meu afilhado?', resposta: 'Sim! A ONG recebe visitas ' + ONG.horarioVisitas + '. Agende em Perfil > Agendar visita.' },
-  { pergunta: 'E se meu afilhado for adotado?', resposta: 'Você recebe um aviso e pode escolher outro animal para apadrinhar. O certificado continua salvo em Meus certificados.' },
-  { pergunta: 'O que significam Dia a dia, Saúde e Marco?', resposta: 'São os tipos de publicação: Dia a dia mostra a rotina, Saúde traz consultas e tratamentos, e Marco celebra conquistas, como o primeiro passeio ou a adoção.' },
+  { pergunta: 'O que significam Dia a dia, Saúde e Marco?', resposta: 'São os tipos de publicação: Dia a dia mostra a rotina, Saúde traz consultas e tratamentos, e Marco celebra conquistas importantes, como o primeiro passeio ou a recuperação.' },
 ];
 
 export default function HelpScreen() {
