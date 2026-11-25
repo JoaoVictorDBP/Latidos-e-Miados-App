@@ -36,6 +36,17 @@ export function VisitasProvider({ children }) {
     cancelarVisita: (id) => {
       setVisitas((atuais) => atuais.filter((v) => v.id !== id));
     },
+    // Remove o animal de visitas multi-pet ou cancela visitas exclusivas quando marcado como memorial
+    removerAnimalDasVisitas: (animalId) => {
+      setVisitas((atuais) =>
+        atuais
+          .map((visita) => ({
+            ...visita,
+            animalIds: visita.animalIds.filter((id) => id !== animalId),
+          }))
+          .filter((visita) => visita.animalIds.length > 0)
+      );
+    },
   }), [visitas]);
 
   return <VisitasContext.Provider value={value}>{children}</VisitasContext.Provider>;

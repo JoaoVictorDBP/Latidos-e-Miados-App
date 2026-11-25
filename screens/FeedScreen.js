@@ -6,7 +6,6 @@ import Screen from '../components/Screen';
 import { ChipGroup } from '../components/Chip';
 import PostHeader from '../components/PostHeader';
 import LikeButton from '../components/LikeButton';
-import { buscarAnimal } from '../data/animais';
 import { POSTS, CATEGORIAS_POST } from '../data/posts';
 import { useApadrinhamentos } from '../context/ApadrinhamentosContext';
 import { usePosts } from '../context/PostsContext';
@@ -17,7 +16,7 @@ const TODOS = 'todos';
 const CATEGORIA_TODAS = 'Todas';
 
 export default function FeedScreen({ navigation, route }) {
-  const { apadrinhamentos } = useApadrinhamentos();
+  const { apadrinhamentos, buscarAnimal } = useApadrinhamentos();
   const { comentariosDe } = usePosts();
   const { naoLidas } = useNotificacoes();
   const [filtroAnimal, setFiltroAnimal] = useState(TODOS);
@@ -34,7 +33,9 @@ export default function FeedScreen({ navigation, route }) {
 
   useEffect(() => () => clearTimeout(temporizador.current), []);
 
-  const afilhados = apadrinhamentos.map((item) => item.animalId);
+  const afilhados = apadrinhamentos
+    .filter((item) => item.animalId)
+    .map((item) => item.animalId);
   const filtroAnimalAtivo = afilhados.includes(filtroAnimal) ? filtroAnimal : TODOS;
 
   // Filtra posts por afilhado e por categoria (Itens #30 e #36)
