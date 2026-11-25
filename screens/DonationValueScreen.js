@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import Animated, { FadeInDown } from 'react-native-reanimated';
 import Screen from '../components/Screen';
 import BackButton from '../components/BackButton';
@@ -8,7 +9,7 @@ import RadioCard from '../components/RadioCard';
 import CurrencyInput from '../components/CurrencyInput';
 import { buscarAnimal } from '../data/animais';
 import { formatarReais, paraCentavos, VALOR_MINIMO_CENTAVOS } from '../utils/currency';
-import { colors } from '../theme';
+import { colors, typography } from '../theme';
 
 const VALORES = [
   { id: '10', centavos: 1000, desc: 'cobre um vermífugo' },
@@ -20,13 +21,17 @@ const VALORES = [
 
 export default function DonationValueScreen({ navigation, route }) {
   const animal = buscarAnimal(route.params?.animalId ?? '1');
-  const [selectedId, setSelectedId] = useState('50');
+  // Inicia sem pré-seleção forçada, exigindo escolha ativa (Item #19)
+  const [selectedId, setSelectedId] = useState(null);
   const [outroValor, setOutroValor] = useState('');
   const scrollRef = useRef(null);
 
   const outroSelecionado = selectedId === 'outro';
-  const valorCentavos = outroSelecionado ? paraCentavos(outroValor) : VALORES.find((item) => item.id === selectedId).centavos;
-  const podeContinuar = valorCentavos >= VALOR_MINIMO_CENTAVOS;
+  const itemSelecionado = VALORES.find((item) => item.id === selectedId);
+  const valorCentavos = outroSelecionado
+    ? paraCentavos(outroValor)
+    : itemSelecionado?.centavos ?? 0;
+  const podeContinuar = selectedId !== null && valorCentavos >= VALOR_MINIMO_CENTAVOS;
 
   // Mantém o campo de outro valor visível acima do teclado
   const rolarParaOutroValor = () => {
@@ -47,6 +52,7 @@ export default function DonationValueScreen({ navigation, route }) {
           onContentSizeChange={rolarParaOutroValor}
         >
           <Text style={styles.title}>Quanto você quer doar por mês para {animal.nome}?</Text>
+          <Text style={styles.subtitle}>Escolha uma das cotas mensais ou digite outro valor:</Text>
 
           {VALORES.map((item) => (
             <RadioCard
@@ -63,9 +69,18 @@ export default function DonationValueScreen({ navigation, route }) {
               ) : null}
             </RadioCard>
           ))}
+
+          {/* Link contextual para dúvidas (Item #12) */}
+          <TouchableOpacity style={styles.helpLink} onPress={() => navigation.navigate('Help')}>
+            <Ionicons name="help-circle-outline" size={18} color={colors.primary} />
+            <Text style={styles.helpText}>Dúvidas sobre valores, pausa e cancelamento? Veja aqui</Text>
+          </TouchableOpacity>
         </ScrollView>
 
         <View style={styles.footer}>
+          {!selectedId ? (
+            <Text style={styles.hint}>Selecione um valor para continuar</Text>
+          ) : null}
           <Button title="Continuar" disabled={!podeContinuar} onPress={() => navigation.navigate('Payment', { animalId: animal.id, valorCentavos })} />
         </View>
       </KeyboardAvoidingView>
@@ -76,8 +91,12 @@ export default function DonationValueScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   header: { margin: 16, alignSelf: 'flex-start' },
-  content: { padding: 24 },
-  title: { fontSize: 24, fontWeight: 'bold', color: colors.text, marginBottom: 24 },
+  content: { padding: 24, paddingBottom: 16 },
+  title: { fontSize: 22, fontWeight: 'bold', color: colors.text, marginBottom: 8 },
+  subtitle: { ...typography.body, color: colors.textMuted, marginBottom: 20 },
   outroValor: { marginTop: 8 },
+  helpLink: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 16, paddingVertical: 8 },
+  helpText: { fontSize: 13, color: colors.primary, fontWeight: '600' },
   footer: { padding: 24 },
+  hint: { ...typography.caption, textAlign: 'center', color: colors.textMuted, marginBottom: 8 },
 });

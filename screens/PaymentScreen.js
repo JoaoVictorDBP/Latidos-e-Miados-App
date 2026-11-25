@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Image, TouchableOpacity } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import Screen from '../components/Screen';
 import ScreenHeader from '../components/ScreenHeader';
 import Button from '../components/Button';
@@ -10,6 +11,7 @@ import { buscarAnimal } from '../data/animais';
 import { FORMAS_PAGAMENTO, nomePagamento } from '../data/pagamentos';
 import { USUARIO } from '../data/usuario';
 import { useApadrinhamentos } from '../context/ApadrinhamentosContext';
+import { useAuth } from '../context/AuthContext';
 import { formatarReais } from '../utils/currency';
 import { colors, typography } from '../theme';
 
@@ -20,12 +22,15 @@ export default function PaymentScreen({ navigation, route }) {
   const [pagamento, setPagamento] = useState('pix');
   const [resumoVisivel, setResumoVisivel] = useState(false);
   const { apadrinhar } = useApadrinhamentos();
+  const { usuario } = useAuth();
+
+  const usuarioAtivo = usuario ?? USUARIO;
 
   const resumo = [
     ['Afilhado', animal.nome],
     ['Valor mensal', valor],
     ['Pagamento', nomePagamento(pagamento)],
-    ...(pagamento === 'boleto' ? [['Boleto enviado para', USUARIO.email]] : []),
+    ...(pagamento === 'boleto' ? [['Boleto enviado para', usuarioAtivo.email]] : []),
     ['Primeira cobrança', 'hoje'],
   ];
 
@@ -54,14 +59,21 @@ export default function PaymentScreen({ navigation, route }) {
           <RadioCard
             key={forma.id}
             title={forma.nome}
-            description={forma.id === 'boleto' ? forma.descricao + ' para ' + USUARIO.email : forma.descricao}
+            description={forma.id === 'boleto' ? forma.descricao + ' para ' + usuarioAtivo.email : forma.descricao}
             selected={pagamento === forma.id}
             onPress={() => setPagamento(forma.id)}
           />
         ))}
 
         <Text style={styles.infoText}>Você pode alterar, pausar ou cancelar quando quiser, no seu perfil.</Text>
-        <Text style={styles.infoText}>Pagamento processado por</Text>
+
+        {/* Link contextual de dúvidas sobre pagamentos (Item #12) */}
+        <TouchableOpacity style={styles.helpLink} onPress={() => navigation.navigate('Help')}>
+          <Ionicons name="help-circle-outline" size={16} color={colors.primary} />
+          <Text style={styles.helpText}>Dúvidas sobre quando a cobrança ocorre e segurança? Saiba mais</Text>
+        </TouchableOpacity>
+
+        <Text style={styles.processorText}>Pagamento processado por</Text>
         <Image source={require('../assets/images/mercadopago.png')} style={styles.processor} accessibilityLabel="Mercado Pago" />
       </ScrollView>
 
@@ -86,13 +98,16 @@ export default function PaymentScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
-  content: { padding: 24 },
-  summaryCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.surface, padding: 16, borderRadius: 12, marginBottom: 24 },
-  avatar: { width: 40, height: 40, borderRadius: 20, marginRight: 12 },
+  content: { padding: 24, paddingBottom: 16 },
+  summaryCard: { flexDirection: 'row', alignItems: 'center', backgroundColor: colors.surface, padding: 16, borderRadius: 12, marginBottom: 24, borderWidth: 1, borderColor: colors.border },
+  avatar: { width: 44, height: 44, borderRadius: 22, marginRight: 12 },
   summaryTitle: { fontSize: 16, fontWeight: 'bold', color: colors.text },
   summarySubtitle: { fontSize: 14, color: colors.textMuted },
   sectionTitle: { marginBottom: 16 },
-  infoText: { ...typography.caption, textAlign: 'center', marginTop: 16 },
-  processor: { width: 169, height: 32, alignSelf: 'center', marginTop: 8, resizeMode: 'contain' },
+  infoText: { ...typography.caption, textAlign: 'center', marginTop: 16, color: colors.textMuted },
+  helpLink: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 12, paddingVertical: 6 },
+  helpText: { fontSize: 13, color: colors.primary, fontWeight: '600' },
+  processorText: { ...typography.caption, textAlign: 'center', marginTop: 16, color: colors.textMuted },
+  processor: { width: 169, height: 32, alignSelf: 'center', marginTop: 6, resizeMode: 'contain' },
   footer: { padding: 24 },
 });

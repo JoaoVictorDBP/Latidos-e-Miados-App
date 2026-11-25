@@ -12,21 +12,42 @@ import useConfirmarDescarte from '../hooks/useConfirmarDescarte';
 import { colors } from '../theme';
 import { ongFormStyles } from '../styles/ongForm';
 
-const CAMPOS_DE_TEXTO = ['nome', 'idade', 'historia'];
+const CAMPOS_DE_TEXTO = ['nome', 'historia'];
+const UNIDADES_IDADE = ['anos', 'meses'];
 
 const ERROS = {
   nome: 'Informe o nome do animal',
-  idade: 'Informe a idade do animal',
+  idade: 'Informe a idade numérica do animal',
   historia: 'Conte a história do resgate',
+};
+
+const parseIdadeInicial = (texto) => {
+  if (!texto) return { numero: '', unidade: 'anos' };
+  const num = texto.replace(/\D/g, '');
+  const un = texto.toLowerCase().includes('m') ? 'meses' : 'anos';
+  return { numero: num, unidade: un };
+};
+
+const formatarIdadeFinal = (numero, unidade) => {
+  const n = parseInt(numero, 10) || 0;
+  if (unidade === 'meses') {
+    return n === 1 ? '1 mês' : n + ' meses';
+  }
+  return n === 1 ? '1 ano' : n + ' anos';
 };
 
 const ANIMAL_VAZIO = { imagem: null, nome: '', especie: ESPECIES[0], idade: '', historia: '' };
 
-// Formulário do modo ONG: cadastra um animal novo ou edita o animal recebido por parâmetro
 export default function ONGAnimalFormScreen({ navigation, route }) {
   const original = route.params?.animal ?? ANIMAL_VAZIO;
   const editando = Boolean(route.params?.animal);
   const [animal, setAnimal] = useState(original);
+
+  // Idade estruturada com número e unidade (Item #21)
+  const inicialIdade = parseIdadeInicial(original.idade);
+  const [idadeNumero, setIdadeNumero] = useState(inicialIdade.numero);
+  const [idadeUnidade, setIdadeUnidade] = useState(inicialIdade.unidade);
+
   const [tocados, setTocados] = useState({});
   const [especiesAbertas, setEspeciesAbertas] = useState(false);
   const [historiaFocada, setHistoriaFocada] = useState(false);
@@ -36,12 +57,32 @@ export default function ONGAnimalFormScreen({ navigation, route }) {
     setAnimal((atual) => ({ ...atual, [campo]: valor }));
     setTocados((atual) => ({ ...atual, [campo]: true }));
   };
-  // O erro só aparece depois que a pessoa mexeu no campo
-  const erro = (campo) => (tocados[campo] && !animal[campo].trim() ? ERROS[campo] : '');
 
-  const temAlteracao = animal.imagem !== original.imagem || animal.especie !== original.especie
-    || CAMPOS_DE_TEXTO.some((campo) => animal[campo].trim() !== original[campo]);
-  const camposPreenchidos = Boolean(animal.imagem) && CAMPOS_DE_TEXTO.every((campo) => animal[campo].trim());
+  const handleIdadeNumeroChange = (valor) => {
+    const limpo = valor.replace(/\D/g, '');
+    setIdadeNumero(limpo);
+    setTocados((atual) => ({ ...atual, idade: true }));
+  };
+
+  const erro = (campo) => {
+    if (campo === 'idade') {
+      return tocados.idade && !idadeNumero ? ERROS.idade : '';
+    }
+    return tocados[campo] && !animal[campo].trim() ? ERROS[campo] : '';
+  };
+
+  const idadeComposta = idadeNumero ? formatarIdadeFinal(idadeNumero, idadeUnidade) : '';
+  const temAlteracao =
+    animal.imagem !== original.imagem ||
+    animal.especie !== original.especie ||
+    idadeComposta !== original.idade ||
+    CAMPOS_DE_TEXTO.some((campo) => animal[campo].trim() !== original[campo]);
+
+  const camposPreenchidos =
+    Boolean(animal.imagem) &&
+    Boolean(idadeNumero) &&
+    CAMPOS_DE_TEXTO.every((campo) => animal[campo].trim());
+
   const podeSalvar = temAlteracao && camposPreenchidos;
   const { sairSemPerguntar, modalDescarte } = useConfirmarDescarte(temAlteracao);
 
@@ -63,15 +104,18 @@ export default function ONGAnimalFormScreen({ navigation, route }) {
     setEspeciesAbertas(false);
   };
 
-  // Simula o salvamento: a edição volta para a página do animal com os dados novos
   const handleSalvar = () => {
-    const animalSalvo = { ...animal };
-    CAMPOS_DE_TEXTO.forEach((campo) => { animalSalvo[campo] = animal[campo].trim(); });
+    const animalSalvo = {
+      ...animal,
+      idade: formatarIdadeFinal(idadeNumero, idadeUnidade),
+    };
+    CAMPOS_DE_TEXTO.forEach((campo) => {
+      animalSalvo[campo] = animal[campo].trim();
+    });
     sairSemPerguntar(() => (editando ? navigation.popTo('ONGAnimal', { animal: animalSalvo }) : navigation.goBack()));
     if (!editando) Alert.alert('Animal cadastrado', animalSalvo.nome + ' já aparece para a equipe da ONG.');
   };
 
-  // Mantém a história visível acima do teclado
   const rolarParaHistoria = () => {
     if (historiaFocada) scrollRef.current?.scrollToEnd({ animated: true });
   };
@@ -101,7 +145,7 @@ export default function ONGAnimalFormScreen({ navigation, route }) {
 
           <Text style={ongFormStyles.label}>Espécie *</Text>
           <TouchableOpacity style={ongFormStyles.dropdown} onPress={() => setEspeciesAbertas(!especiesAbertas)} accessibilityLabel={'Espécie: ' + animal.especie}>
-            <Text>{animal.especie}</Text>
+            <Text style={{ color: colors.text }}>{animal.especie}</Text>
             <Ionicons name={especiesAbertas ? 'chevron-up' : 'chevron-down'} size={16} color={colors.textMuted} />
           </TouchableOpacity>
           {especiesAbertas ? (
@@ -118,7 +162,41 @@ export default function ONGAnimalFormScreen({ navigation, route }) {
             </Animated.View>
           ) : null}
 
-          <TextField variant="boxed" label="Idade *" value={animal.idade} onChangeText={alterar('idade')} error={erro('idade')} placeholder="ex.: 3 anos" />
+          {/* Campo Idade Estruturado (Item #21) */}
+          <Text style={ongFormStyles.label}>Idade *</Text>
+          <View style={styles.ageContainer}>
+            <View style={styles.ageInputWrapper}>
+              <TextField
+                variant="boxed"
+                label=""
+                value={idadeNumero}
+                onChangeText={handleIdadeNumeroChange}
+                placeholder="Ex: 3"
+                keyboardType="number-pad"
+                maxLength={3}
+                style={{ marginTop: 0 }}
+              />
+            </View>
+
+            <View style={styles.unitToggleGroup}>
+              {UNIDADES_IDADE.map((unidade) => {
+                const ativa = idadeUnidade === unidade;
+                return (
+                  <TouchableOpacity
+                    key={unidade}
+                    style={[styles.unitBtn, ativa && styles.unitBtnActive]}
+                    onPress={() => setIdadeUnidade(unidade)}
+                  >
+                    <Text style={[styles.unitBtnText, ativa && styles.unitBtnTextActive]}>
+                      {unidade === 'anos' ? 'Anos' : 'Meses'}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
+          {erro('idade') ? <Text style={styles.errorText}>{erro('idade')}</Text> : null}
+
           <TextField
             variant="boxed"
             label="História do resgate *"
@@ -150,4 +228,25 @@ const styles = StyleSheet.create({
   dropdownOption: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 12 },
   dropdownOptionText: { color: colors.text },
   dropdownOptionActive: { color: colors.primary, fontWeight: 'bold' },
+
+  ageContainer: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  ageInputWrapper: { width: 100 },
+  unitToggleGroup: { flexDirection: 'row', flex: 1, gap: 8, height: 48, alignItems: 'center' },
+  unitBtn: {
+    flex: 1,
+    height: 44,
+    borderWidth: 1,
+    borderColor: colors.borderStrong,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.surface,
+  },
+  unitBtnActive: {
+    borderColor: colors.primary,
+    backgroundColor: colors.primaryLight,
+  },
+  unitBtnText: { fontSize: 14, color: colors.textMuted, fontWeight: '600' },
+  unitBtnTextActive: { color: colors.primary, fontWeight: 'bold' },
+  errorText: { color: colors.danger, fontSize: 12, marginTop: 4 },
 });
