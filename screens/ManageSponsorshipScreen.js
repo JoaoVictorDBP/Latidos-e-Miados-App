@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Text, StyleSheet, ScrollView, KeyboardAvoidingView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, KeyboardAvoidingView } from 'react-native';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
 import Screen from '../components/Screen';
 import ScreenHeader from '../components/ScreenHeader';
@@ -7,7 +7,6 @@ import Button from '../components/Button';
 import { ChipGroup } from '../components/Chip';
 import CurrencyInput from '../components/CurrencyInput';
 import ConfirmModal from '../components/ConfirmModal';
-import { buscarAnimal } from '../data/animais';
 import { FORMAS_PAGAMENTO, nomePagamento } from '../data/pagamentos';
 import { useApadrinhamentos } from '../context/ApadrinhamentosContext';
 import { formatarMoeda, formatarReais, paraCentavos, VALOR_MINIMO_CENTAVOS } from '../utils/currency';
@@ -57,9 +56,11 @@ const criarModais = (nome, pausadoAte) => ({
 });
 
 export default function ManageSponsorshipScreen({ navigation, route }) {
-  const animal = buscarAnimal(route.params?.animalId ?? '1');
-  const { buscarApadrinhamento, atualizar, pausar, retomar, cancelar } = useApadrinhamentos();
-  const apadrinhamento = buscarApadrinhamento(animal.id);
+  const { buscarAnimal, buscarApadrinhamento, atualizar, pausar, retomar, cancelar } = useApadrinhamentos();
+  const alvo = route.params?.apadrinhamentoId ?? route.params?.animalId ?? '1';
+  const apadrinhamento = buscarApadrinhamento(alvo);
+  const animal = apadrinhamento ? buscarAnimal(apadrinhamento.animalId) : null;
+  const nomeExibido = animal?.nome ?? '';
   const inicial = valorInicial(apadrinhamento?.valorCentavos);
 
   const [valor, setValor] = useState(inicial.valor);
@@ -75,12 +76,17 @@ export default function ManageSponsorshipScreen({ navigation, route }) {
   // Depois do cancelamento a tela fecha; até lá não há o que mostrar
   if (!apadrinhamento) return null;
 
+  const isMemorialPendente = apadrinhamento.status === 'pausado_memorial';
   const valorCentavos = valor === 'outro' ? paraCentavos(outroValor) : parseInt(valor, 10) * 100;
   const trocouPagamento = pagamento !== apadrinhamento.pagamento;
   const temAlteracao = valorCentavos !== apadrinhamento.valorCentavos || trocouPagamento;
   const podeSalvar = temAlteracao && valorCentavos >= VALOR_MINIMO_CENTAVOS;
-  const modal = criarModais(animal.nome, apadrinhamento.pausadoAte)[modalTipo];
-  const status = apadrinhamento.pausadoAte ? 'Pausado até ' + apadrinhamento.pausadoAte : 'Próxima cobrança em ' + apadrinhamento.proximaCobranca;
+  const modal = criarModais(nomeExibido, apadrinhamento.pausadoAte)[modalTipo];
+  const status = isMemorialPendente
+    ? 'Pausado · Escolha pendente até ' + apadrinhamento.prazoEscolha
+    : apadrinhamento.pausadoAte
+      ? 'Pausado até ' + apadrinhamento.pausadoAte
+      : 'Próxima cobrança em ' + apadrinhamento.proximaCobranca;
 
   // Qualquer alteração esconde o aviso anterior
   const alterando = (setter) => (novoValor) => {
@@ -89,12 +95,12 @@ export default function ManageSponsorshipScreen({ navigation, route }) {
   };
 
   const handleSalvar = () => {
-    atualizar(animal.id, { valorCentavos, pagamento });
+    atualizar(apadrinhamento.id, { valorCentavos, pagamento });
     setAviso(trocouPagamento ? 'Alterações salvas! O novo pagamento foi autorizado.' : 'Alterações salvas!');
   };
 
   const handleRetomar = () => {
-    retomar(animal.id);
+    retomar(apadrinhamento.id);
     setAviso('Apadrinhamento retomado!');
   };
 
@@ -108,13 +114,13 @@ export default function ManageSponsorshipScreen({ navigation, route }) {
     setModalVisivel(false);
     if (modalTipo === 'cancelado') {
       navigation.goBack();
-      cancelar(animal.id);
+      cancelar(apadrinhamento.id);
     }
   };
 
   const confirmarModal = () => {
     if (modalTipo === 'pausar') {
-      pausar(animal.id);
+      pausar(apadrinhamento.id);
       setModalTipo('pausado');
     } else if (modalTipo === 'cancelar') {
       setModalTipo('cancelado');
@@ -130,7 +136,7 @@ export default function ManageSponsorshipScreen({ navigation, route }) {
 
   return (
     <Screen>
-      <ScreenHeader title={animal.nome} image={animal.imagem} />
+      <ScreenHeader title={nomeExibido} image={animal?.imagem} />
 
       <KeyboardAvoidingView style={styles.flex} behavior="padding">
         <ScrollView
@@ -140,9 +146,24 @@ export default function ManageSponsorshipScreen({ navigation, route }) {
           keyboardDismissMode="on-drag"
           onLayout={rolarParaOutroValor}
         >
+          {isMemorialPendente && animal ? (
+            <View style={styles.memorialBanner}>
+              <Text style={styles.memorialBannerTitle}>🕊️ {animal.nome} partiu</Text>
+              <Text style={styles.memorialBannerText}>
+                Sua cobrança foi pausada automaticamente. Você pode escolher com calma até {apadrinhamento.prazoEscolha} como deseja continuar.
+              </Text>
+              <Button
+                title="Escolher como continuar"
+                size="small"
+                onPress={() => navigation.navigate('MemorialChoice', { animalId: animal.id, apadrinhamentoId: apadrinhamento.id })}
+                style={styles.memorialBannerBtn}
+              />
+            </View>
+          ) : null}
+
           <Text style={typography.pageTitle}>{formatarReais(apadrinhamento.valorCentavos)}/mês</Text>
           <Text style={styles.info}>{nomePagamento(apadrinhamento.pagamento)} • desde {apadrinhamento.desde}</Text>
-          <Text style={[styles.status, apadrinhamento.pausadoAte && styles.statusPausado]}>{status}</Text>
+          <Text style={[styles.status, (apadrinhamento.pausadoAte || isMemorialPendente) && styles.statusPausado]}>{status}</Text>
 
           <Text style={styles.sectionLabel}>Alterar valor mensal</Text>
           <ChipGroup options={VALORES} selected={valor} onSelect={alterando(setValor)} getLabel={rotuloValor} style={styles.chips} />
@@ -169,12 +190,16 @@ export default function ManageSponsorshipScreen({ navigation, route }) {
 
           <Button title="Salvar" disabled={!podeSalvar} onPress={handleSalvar} style={styles.spaced} />
           {aviso ? <Animated.Text style={styles.successText} entering={FadeIn.duration(250)}>{aviso}</Animated.Text> : null}
-          <Button
-            title={apadrinhamento.pausadoAte ? 'Retomar apadrinhamento' : 'Pausar por 1 mês'}
-            variant="outline"
-            onPress={apadrinhamento.pausadoAte ? handleRetomar : () => abrirModal('pausar')}
-            style={styles.spaced}
-          />
+
+          {!isMemorialPendente ? (
+            <Button
+              title={apadrinhamento.pausadoAte ? 'Retomar apadrinhamento' : 'Pausar por 1 mês'}
+              variant="outline"
+              onPress={apadrinhamento.pausadoAte ? handleRetomar : () => abrirModal('pausar')}
+              style={styles.spaced}
+            />
+          ) : null}
+
           <Button title="Cancelar Apadrinhamento" variant="danger" onPress={() => abrirModal('cancelar')} />
         </ScrollView>
       </KeyboardAvoidingView>
@@ -187,6 +212,18 @@ export default function ManageSponsorshipScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   flex: { flex: 1 },
   content: { padding: 24 },
+  memorialBanner: {
+    backgroundColor: colors.primaryLight,
+    borderWidth: 1,
+    borderStyle: 'dashed',
+    borderColor: colors.primary,
+    borderRadius: 12,
+    padding: 14,
+    marginBottom: 20,
+  },
+  memorialBannerTitle: { fontSize: 15, fontWeight: 'bold', color: colors.text, marginBottom: 4 },
+  memorialBannerText: { ...typography.caption, color: colors.textMuted, lineHeight: 18, marginBottom: 12 },
+  memorialBannerBtn: { alignSelf: 'flex-start' },
   info: { color: colors.textMuted },
   status: { color: colors.textMuted, marginTop: 2, marginBottom: 32 },
   statusPausado: { color: colors.primary, fontWeight: 'bold' },

@@ -27,6 +27,8 @@ import NotificationSettingsScreen from './screens/NotificationSettingsScreen';
 import CertificatesScreen from './screens/CertificatesScreen';
 import ScheduleVisitScreen from './screens/ScheduleVisitScreen';
 import MyVisitsScreen from './screens/MyVisitsScreen';
+import MemorialChoiceScreen from './screens/MemorialChoiceScreen';
+import MemorialWallScreen from './screens/MemorialWallScreen';
 import ONGNewPostScreen from './screens/ONGNewPostScreen';
 import ONGAnimalScreen from './screens/ONGAnimalScreen';
 import ONGAnimalFormScreen from './screens/ONGAnimalFormScreen';
@@ -63,6 +65,8 @@ const TELAS = {
   Certificates: CertificatesScreen,
   ScheduleVisit: ScheduleVisitScreen,
   MyVisits: MyVisitsScreen,
+  MemorialChoice: MemorialChoiceScreen,
+  MemorialWall: MemorialWallScreen,
   Post: PostScreen,
   ONGDashboard: ONGDashboardScreen,
   ONGNewPost: ONGNewPostScreen,

@@ -7,7 +7,6 @@ import Button from '../components/Button';
 import ConfirmModal from '../components/ConfirmModal';
 import SummaryRows from '../components/SummaryRows';
 import { ChipGroup } from '../components/Chip';
-import { buscarAnimal } from '../data/animais';
 import { ONG } from '../data/usuario';
 import { useApadrinhamentos } from '../context/ApadrinhamentosContext';
 import { useVisitas } from '../context/VisitasContext';
@@ -18,7 +17,10 @@ const DIAS = ['Sáb, 08/11', 'Sáb, 15/11', 'Sáb, 22/11', 'Sáb, 29/11'];
 const HORAS = ['9h', '10h30', '14h'];
 
 export default function ScheduleVisitScreen({ navigation }) {
-  const afilhados = useApadrinhamentos().apadrinhamentos.map((item) => item.animalId);
+  const { apadrinhamentos, buscarAnimal } = useApadrinhamentos();
+  const afilhados = apadrinhamentos
+    .filter((item) => item.animalId && item.status !== 'pausado_memorial')
+    .map((item) => item.animalId);
   const [escolhidos, setEscolhidos] = useState(afilhados.length === 1 ? afilhados : []);
   const [dia, setDia] = useState(null);
   const [hora, setHora] = useState(null);

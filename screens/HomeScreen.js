@@ -5,7 +5,7 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 import Screen from '../components/Screen';
 import Tag from '../components/Tag';
 import { ChipGroup } from '../components/Chip';
-import { ANIMAIS, ESPECIE_CURTA, PORTES, FAIXAS_ETARIAS } from '../data/animais';
+import { ESPECIE_CURTA, PORTES, FAIXAS_ETARIAS } from '../data/animais';
 import { useApadrinhamentos } from '../context/ApadrinhamentosContext';
 import { useNotificacoes } from '../context/NotificacoesContext';
 import { useVisitas } from '../context/VisitasContext';
@@ -21,14 +21,14 @@ export default function HomeScreen({ navigation }) {
   const [filtroIdade, setFiltroIdade] = useState('Todas');
   const [mostrarFiltrosAvancados, setMostrarFiltrosAvancados] = useState(false);
 
-  const { apadrinhamentos, buscarApadrinhamento } = useApadrinhamentos();
+  const { animaisDisponiveis, apadrinhamentos, buscarApadrinhamento } = useApadrinhamentos();
   const { naoLidas } = useNotificacoes();
   const { visitas } = useVisitas();
 
   const proximaVisita = visitas[0];
   const afilhadosCount = apadrinhamentos.length;
 
-  const animaisFiltrados = ANIMAIS.filter((animal) => {
+  const animaisFiltrados = animaisDisponiveis.filter((animal) => {
     const passaBusca = animal.nome.toLowerCase().includes(busca.trim().toLowerCase());
     const passaEspecie = !FILTROS_ESPECIE[filtroEspecie] || animal.especie === FILTROS_ESPECIE[filtroEspecie];
     const passaPorte = filtroPorte === 'Todos' || animal.porte === filtroPorte;

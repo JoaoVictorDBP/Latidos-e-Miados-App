@@ -15,7 +15,7 @@ const PERGUNTAS = [
   { pergunta: 'Como cancelo um apadrinhamento?', resposta: 'Em Perfil > Meus apadrinhamentos, toque no afilhado e depois em "Cancelar apadrinhamento". Nenhuma cobrança nova é feita depois disso.' },
   { pergunta: 'Posso visitar meu afilhado?', resposta: 'Sim! A ONG recebe visitas ' + ONG.horarioVisitas + '. Agende em Perfil > Agendar visita.' },
   { pergunta: 'E se meu afilhado falecer?', resposta: 'Muitos dos nossos resgatados já são idosos, e a ONG cuida de cada um com carinho até o fim. Se isso acontecer, a equipe avisa você com cuidado, e você escolhe com calma: transferir o apadrinhamento para outro animal que precisa de ajuda ou encerrar o apadrinhamento, sem nenhuma cobrança a mais. O certificado continua guardado em Meus certificados.' },
-  { pergunta: 'O que significam Dia a dia, Saúde e Marco?', resposta: 'São os tipos de publicação: Dia a dia mostra a rotina, Saúde traz consultas e tratamentos, e Marco celebra conquistas, como o primeiro passeio ou o fim de um tratamento.' },
+  { pergunta: 'O que significam Dia a dia, Saúde e Marco?', resposta: 'São os tipos de publicação: Dia a dia mostra a rotina, Saúde traz consultas e tratamentos, e Marco celebra conquistas importantes, como o primeiro passeio ou a recuperação e o fim de um tratamento.' },
 ];
 
 export default function HelpScreen() {

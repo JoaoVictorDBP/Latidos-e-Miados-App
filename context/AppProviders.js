@@ -9,13 +9,13 @@ import { VisitasProvider } from './VisitasContext';
 export default function AppProviders({ children }) {
   return (
     <AuthProvider>
-      <ApadrinhamentosProvider>
-        <NotificacoesProvider>
-          <PostsProvider>
-            <VisitasProvider>{children}</VisitasProvider>
-          </PostsProvider>
-        </NotificacoesProvider>
-      </ApadrinhamentosProvider>
+      <NotificacoesProvider>
+        <VisitasProvider>
+          <ApadrinhamentosProvider>
+            <PostsProvider>{children}</PostsProvider>
+          </ApadrinhamentosProvider>
+        </VisitasProvider>
+      </NotificacoesProvider>
     </AuthProvider>
   );
 }

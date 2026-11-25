@@ -3,8 +3,9 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'rea
 import { Ionicons } from '@expo/vector-icons';
 import Screen from '../components/Screen';
 import Button from '../components/Button';
+import Tag from '../components/Tag';
 import ONGTabBar from '../components/ONGTabBar';
-import { ANIMAIS } from '../data/animais';
+import { useApadrinhamentos } from '../context/ApadrinhamentosContext';
 import { pluralizar } from '../utils/text';
 import { colors, typography } from '../theme';
 
@@ -16,7 +17,8 @@ const ESTATISTICAS = [
 ];
 
 export default function ONGDashboardScreen({ navigation }) {
-  const semPostRecente = ANIMAIS.filter((animal) => animal.diasSemPost > LIMITE_DIAS_SEM_POST);
+  const { animais } = useApadrinhamentos();
+  const semPostRecente = animais.filter((animal) => animal.status !== 'memorial' && animal.diasSemPost > LIMITE_DIAS_SEM_POST);
 
   return (
     <Screen>
@@ -48,18 +50,26 @@ export default function ONGDashboardScreen({ navigation }) {
           <Text style={typography.sectionTitle}>Animais</Text>
           <Button title="+ Novo animal" size="small" onPress={() => navigation.navigate('ONGNewAnimal')} />
         </View>
-        {ANIMAIS.map((animal) => (
-          <TouchableOpacity key={animal.id} style={styles.animalItem} onPress={() => navigation.navigate('ONGAnimal', { animalId: animal.id })}>
-            <Image source={animal.imagem} style={styles.animalImg} />
-            <View style={styles.animalInfo}>
-              <Text style={styles.animalName}>{animal.nome}</Text>
-              <Text style={styles.animalStatus}>
-                {pluralizar(animal.padrinhos, 'padrinho', 'padrinhos')} • último post há {pluralizar(animal.diasSemPost, 'dia', 'dias')}
-              </Text>
-            </View>
-            <Ionicons name="chevron-forward" size={24} color={colors.borderStrong} />
-          </TouchableOpacity>
-        ))}
+        {animais.map((animal) => {
+          const isMemorial = animal.status === 'memorial';
+          return (
+            <TouchableOpacity key={animal.id} style={styles.animalItem} onPress={() => navigation.navigate('ONGAnimal', { animalId: animal.id })}>
+              <Image source={animal.imagem} style={[styles.animalImg, isMemorial && styles.animalImgMemorial]} />
+              <View style={styles.animalInfo}>
+                <View style={styles.nameRow}>
+                  <Text style={styles.animalName}>{animal.nome}</Text>
+                  {isMemorial ? <Tag label="Em memória" variant="muted" /> : null}
+                </View>
+                <Text style={styles.animalStatus}>
+                  {isMemorial
+                    ? 'Em memória desde ' + (animal.dataFalecimento ?? animal.anoEntrada)
+                    : pluralizar(animal.padrinhos, 'padrinho', 'padrinhos') + ' • último post há ' + pluralizar(animal.diasSemPost, 'dia', 'dias')}
+                </Text>
+              </View>
+              <Ionicons name="chevron-forward" size={24} color={colors.borderStrong} />
+            </TouchableOpacity>
+          );
+        })}
       </ScrollView>
 
       <ONGTabBar ativa="painel" />
@@ -81,7 +91,9 @@ const styles = StyleSheet.create({
   sectionHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
   animalItem: { flexDirection: 'row', alignItems: 'center', marginBottom: 16, borderBottomWidth: 1, borderBottomColor: colors.border, paddingBottom: 12 },
   animalImg: { width: 50, height: 50, borderRadius: 25, marginRight: 16 },
+  animalImgMemorial: { opacity: 0.7 },
   animalInfo: { flex: 1 },
+  nameRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   animalName: { fontSize: 16, fontWeight: 'bold', color: colors.text },
   animalStatus: { ...typography.caption, marginTop: 4 },
 });

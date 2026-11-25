@@ -13,4 +13,16 @@ export const somarMeses = (texto, meses) => {
   return formatarData(data);
 };
 
+export const somarDias = (texto, dias) => {
+  const data = lerData(texto);
+  data.setDate(data.getDate() + dias);
+  return formatarData(data);
+};
+
+export const extrairAno = (texto) => {
+  if (!texto) return String(new Date().getFullYear());
+  const partes = String(texto).split('/');
+  return partes[2] ?? String(new Date().getFullYear());
+};
+
 export const hoje = () => formatarData(new Date());
