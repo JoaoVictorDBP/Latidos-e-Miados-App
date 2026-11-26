@@ -9,6 +9,7 @@ import { ESPECIE_CURTA, PORTES, FAIXAS_ETARIAS } from '../data/animais';
 import { useApadrinhamentos } from '../context/ApadrinhamentosContext';
 import { useNotificacoes } from '../context/NotificacoesContext';
 import { useVisitas } from '../context/VisitasContext';
+import { calcularFaixaEtaria, calcularIdadeAnimal } from '../utils/date';
 import { pluralizar } from '../utils/text';
 import { colors, typography } from '../theme';
 
@@ -32,7 +33,8 @@ export default function HomeScreen({ navigation }) {
     const passaBusca = animal.nome.toLowerCase().includes(busca.trim().toLowerCase());
     const passaEspecie = !FILTROS_ESPECIE[filtroEspecie] || animal.especie === FILTROS_ESPECIE[filtroEspecie];
     const passaPorte = filtroPorte === 'Todos' || animal.porte === filtroPorte;
-    const passaIdade = filtroIdade === 'Todas' || animal.faixaEtaria === filtroIdade;
+    const faixaCalculada = calcularFaixaEtaria(animal.dataNascimento, animal.dataFalecimento);
+    const passaIdade = filtroIdade === 'Todas' || faixaCalculada === filtroIdade;
     return passaBusca && passaEspecie && passaPorte && passaIdade;
   });
 
@@ -89,7 +91,7 @@ export default function HomeScreen({ navigation }) {
           placeholderTextColor={colors.textLight}
         />
         {busca ? (
-          <TouchableOpacity onPress={() => setBusca('')} accessibilityLabel="Limpar busca" hitSlop={8}>
+          <TouchableOpacity style={styles.clearBtn} onPress={() => setBusca('')} accessibilityRole="button" accessibilityLabel="Limpar busca" hitSlop={8}>
             <Ionicons name="close-circle" size={18} color={colors.textLight} />
           </TouchableOpacity>
         ) : null}
@@ -145,7 +147,7 @@ export default function HomeScreen({ navigation }) {
         </View>
         <Text style={styles.cardTitle}>{item.nome}</Text>
         <Text style={typography.caption}>
-          {ESPECIE_CURTA[item.especie]} • {item.idade} • {item.porte}
+          {ESPECIE_CURTA[item.especie]} • {calcularIdadeAnimal(item.dataNascimento, item.dataFalecimento)} • {item.porte}
         </Text>
       </TouchableOpacity>
     </Animated.View>
@@ -157,7 +159,9 @@ export default function HomeScreen({ navigation }) {
       <View style={styles.header}>
         <Text style={typography.screenTitle}>Animais</Text>
         <TouchableOpacity
+          style={styles.bellButton}
           onPress={() => navigation.navigate('Notifications')}
+          accessibilityRole="button"
           accessibilityLabel={naoLidas ? 'Notificações, ' + naoLidas + ' novas' : 'Notificações'}
         >
           <Ionicons name="notifications-outline" size={26} color={colors.text} />
@@ -196,18 +200,21 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: { padding: 16, paddingBottom: 0 },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
+  bellButton: { minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
+  clearBtn: { minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
   badge: {
     position: 'absolute',
-    top: -4,
-    right: -6,
+    top: 2,
+    right: 2,
     backgroundColor: colors.primary,
-    borderRadius: 8,
-    minWidth: 16,
-    height: 16,
+    borderRadius: 9,
+    minWidth: 18,
+    height: 18,
+    paddingHorizontal: 4,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  badgeText: { color: colors.white, fontSize: 10, fontWeight: 'bold' },
+  badgeText: { color: colors.white, fontSize: 12, fontWeight: 'bold' },
 
   topSummary: { marginBottom: 16 },
   summaryBanner: {
@@ -240,9 +247,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
-    paddingHorizontal: 12,
+    borderWidth: 1.5,
+    borderColor: colors.borderStrong,
+    paddingLeft: 12,
+    paddingRight: 4,
     borderRadius: 10,
     marginBottom: 12,
   },
@@ -254,9 +262,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 4,
     paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    borderWidth: 1,
+    minHeight: 44,
+    borderRadius: 22,
+    borderWidth: 1.5,
     borderColor: colors.borderStrong,
   },
   toggleAdvancedBtnActive: { borderColor: colors.primary, backgroundColor: colors.primaryLight },

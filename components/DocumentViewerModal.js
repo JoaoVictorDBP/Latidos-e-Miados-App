@@ -20,7 +20,13 @@ export default function DocumentViewerModal({ visible, documento, onClose }) {
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <Pressable style={styles.overlay} onPress={onClose}>
-        <View style={styles.card} onStartShouldSetResponder={() => true}>
+        <View
+          style={styles.card}
+          onStartShouldSetResponder={() => true}
+          accessibilityViewIsModal={true}
+          role="dialog"
+          accessibilityLabel={documento.titulo}
+        >
           <View style={styles.header}>
             <View style={styles.titleRow}>
               <Ionicons
@@ -30,7 +36,13 @@ export default function DocumentViewerModal({ visible, documento, onClose }) {
               />
               <Text style={styles.headerTitle}>{documento.tipo === 'nota' ? 'Comprovante Fiscal' : 'Relatório Contábil'}</Text>
             </View>
-            <TouchableOpacity onPress={onClose} accessibilityLabel="Fechar" hitSlop={8}>
+            <TouchableOpacity
+              style={styles.closeIconBtn}
+              onPress={onClose}
+              accessibilityRole="button"
+              accessibilityLabel="Fechar janela"
+              hitSlop={8}
+            >
               <Ionicons name="close" size={22} color={colors.textMuted} />
             </TouchableOpacity>
           </View>
@@ -72,6 +84,7 @@ const styles = StyleSheet.create({
   overlay: { flex: 1, backgroundColor: colors.overlay, justifyContent: 'center', padding: 20 },
   card: { backgroundColor: colors.background, borderRadius: 16, padding: 20, maxHeight: '85%' },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
+  closeIconBtn: { minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
   titleRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   headerTitle: { fontSize: 18, fontWeight: 'bold', color: colors.text },
   scroll: { marginBottom: 16 },
@@ -92,6 +105,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginTop: 8,
   },
-  legalProofText: { flex: 1, fontSize: 11, color: colors.secondary, fontWeight: '600' },
+  legalProofText: { flex: 1, fontSize: 12, color: colors.secondary, fontWeight: '600' },
   closeBtn: { width: '100%' },
 });

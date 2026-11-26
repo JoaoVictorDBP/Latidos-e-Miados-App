@@ -8,9 +8,11 @@ import PostHeader from '../components/PostHeader';
 import Tag from '../components/Tag';
 import MarkDeceasedModal from '../components/MarkDeceasedModal';
 import { POSTS } from '../data/posts';
+import { ESPECIE_CURTA } from '../data/animais';
 import { usePosts } from '../context/PostsContext';
 import { useApadrinhamentos } from '../context/ApadrinhamentosContext';
 import { escolherDaGaleria, capturarComCamera } from '../utils/mediaPicker';
+import { calcularIdadeAnimal } from '../utils/date';
 import { colors, typography } from '../theme';
 
 export default function ONGAnimalScreen({ navigation, route }) {
@@ -62,7 +64,9 @@ export default function ONGAnimalScreen({ navigation, route }) {
         title={animal.nome}
         right={
           <TouchableOpacity
+            style={styles.moreBtn}
             onPress={() => setMenuVisivel(true)}
+            accessibilityRole="button"
             accessibilityLabel="Mais opções do animal"
             hitSlop={8}
           >
@@ -72,6 +76,9 @@ export default function ONGAnimalScreen({ navigation, route }) {
       />
 
       <ScrollView contentContainerStyle={styles.content}>
+        <Text style={styles.metaText}>
+          {ESPECIE_CURTA[animal.especie]} • {calcularIdadeAnimal(animal.dataNascimento, animal.dataFalecimento)} • {animal.porte}
+        </Text>
         {isMemorial ? (
           <View style={styles.memorialBanner}>
             <Tag label="Em memória" variant="muted" />
@@ -101,7 +108,13 @@ export default function ONGAnimalScreen({ navigation, route }) {
       {/* Menu flutuante de ações do animal */}
       <Modal visible={menuVisivel} transparent animationType="fade" onRequestClose={() => setMenuVisivel(false)}>
         <Pressable style={styles.menuOverlay} onPress={() => setMenuVisivel(false)}>
-          <View style={styles.menuSheet} onStartShouldSetResponder={() => true}>
+          <View
+            style={styles.menuSheet}
+            onStartShouldSetResponder={() => true}
+            accessibilityViewIsModal={true}
+            role="dialog"
+            accessibilityLabel={'Opções para ' + animal.nome}
+          >
             <Text style={styles.menuTitle}>Opções para {animal.nome}</Text>
 
             <TouchableOpacity
@@ -149,7 +162,9 @@ export default function ONGAnimalScreen({ navigation, route }) {
 }
 
 const styles = StyleSheet.create({
+  moreBtn: { minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
   content: { padding: 16 },
+  metaText: { ...typography.caption, color: colors.textMuted, marginBottom: 12 },
   newPostButton: { paddingVertical: 12, marginBottom: 24 },
   memorialBanner: {
     backgroundColor: colors.surface,
@@ -179,7 +194,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
-    paddingVertical: 14,
+    minHeight: 48,
+    paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },

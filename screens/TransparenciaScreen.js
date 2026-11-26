@@ -63,7 +63,9 @@ export default function TransparenciaScreen({ navigation }) {
         <View style={styles.header}>
           <Text style={[typography.pageTitle, styles.title]}>Para onde vai o dinheiro</Text>
           <TouchableOpacity
+            style={styles.bellButton}
             onPress={() => navigation.navigate('Notifications')}
+            accessibilityRole="button"
             accessibilityLabel={naoLidas ? 'Notificações, ' + naoLidas + ' novas' : 'Notificações'}
           >
             <Ionicons name="notifications-outline" size={26} color={colors.text} />
@@ -206,18 +208,20 @@ const styles = StyleSheet.create({
   content: { padding: 16, paddingBottom: 32 },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
   title: { marginBottom: 0, flex: 1 },
+  bellButton: { minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
   badge: {
     position: 'absolute',
-    top: -4,
-    right: -6,
+    top: 2,
+    right: 2,
     backgroundColor: colors.primary,
-    borderRadius: 8,
-    minWidth: 16,
-    height: 16,
+    borderRadius: 9,
+    minWidth: 18,
+    height: 18,
+    paddingHorizontal: 4,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  badgeText: { color: colors.white, fontSize: 10, fontWeight: 'bold' },
+  badgeText: { color: colors.white, fontSize: 12, fontWeight: 'bold' },
 
   dateSelector: {
     flexDirection: 'row',
@@ -272,7 +276,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 2,
   },
   barLabel: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: 'bold',
     color: colors.textMuted,
     marginBottom: 6,

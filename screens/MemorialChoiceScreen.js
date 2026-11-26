@@ -10,6 +10,7 @@ import MemorialImage from '../components/MemorialImage';
 import { useApadrinhamentos } from '../context/ApadrinhamentosContext';
 import { ESPECIE_CURTA } from '../data/animais';
 import { formatarReais } from '../utils/currency';
+import { calcularFaixaEtaria, calcularIdadeAnimal } from '../utils/date';
 import { colors, typography } from '../theme';
 
 export default function MemorialChoiceScreen({ navigation, route }) {
@@ -45,9 +46,12 @@ export default function MemorialChoiceScreen({ navigation, route }) {
     );
 
     if (!animal) return elegiveis;
+    const faixaAnimal = calcularFaixaEtaria(animal.dataNascimento, animal.dataFalecimento);
     return [...elegiveis].sort((a, b) => {
-      const scoreA = (a.especie === animal.especie ? 2 : 0) + (a.faixaEtaria === animal.faixaEtaria ? 1 : 0);
-      const scoreB = (b.especie === animal.especie ? 2 : 0) + (b.faixaEtaria === animal.faixaEtaria ? 1 : 0);
+      const faixaA = calcularFaixaEtaria(a.dataNascimento);
+      const faixaB = calcularFaixaEtaria(b.dataNascimento);
+      const scoreA = (a.especie === animal.especie ? 2 : 0) + (faixaA === faixaAnimal ? 1 : 0);
+      const scoreB = (b.especie === animal.especie ? 2 : 0) + (faixaB === faixaAnimal ? 1 : 0);
       return scoreB - scoreA;
     });
   }, [animaisDisponiveis, apadrinhamentos, animal]);
@@ -175,10 +179,22 @@ export default function MemorialChoiceScreen({ navigation, route }) {
       {/* Modal seletor de outro animal com sugestões parecidas */}
       <Modal visible={seletorAnimalVisivel} transparent animationType="slide" onRequestClose={() => setSeletorAnimalVisivel(false)}>
         <Pressable style={styles.modalOverlay} onPress={() => setSeletorAnimalVisivel(false)}>
-          <View style={styles.modalSheet} onStartShouldSetResponder={() => true}>
+          <View
+            style={styles.modalSheet}
+            onStartShouldSetResponder={() => true}
+            accessibilityViewIsModal={true}
+            role="dialog"
+            accessibilityLabel="Escolha seu novo afilhado"
+          >
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>Escolha seu novo afilhado</Text>
-              <TouchableOpacity onPress={() => setSeletorAnimalVisivel(false)} hitSlop={8}>
+              <TouchableOpacity
+                style={styles.closeIconBtn}
+                onPress={() => setSeletorAnimalVisivel(false)}
+                accessibilityRole="button"
+                accessibilityLabel="Fechar janela"
+                hitSlop={8}
+              >
                 <Ionicons name="close" size={22} color={colors.textMuted} />
               </TouchableOpacity>
             </View>
@@ -205,7 +221,9 @@ export default function MemorialChoiceScreen({ navigation, route }) {
             ) : (
               <ScrollView style={styles.animalList} showsVerticalScrollIndicator={false}>
                 {animaisSugeridos.map((cand) => {
-                  const parecido = cand.especie === animal.especie || cand.faixaEtaria === animal.faixaEtaria;
+                  const parecido =
+                    cand.especie === animal.especie ||
+                    calcularFaixaEtaria(cand.dataNascimento) === calcularFaixaEtaria(animal.dataNascimento, animal.dataFalecimento);
                   return (
                     <TouchableOpacity
                       key={cand.id}
@@ -219,7 +237,7 @@ export default function MemorialChoiceScreen({ navigation, route }) {
                           {parecido ? <Tag label="Sugestão parecida" variant="secondary" /> : null}
                         </View>
                         <Text style={styles.animalMeta}>
-                          {ESPECIE_CURTA[cand.especie]} • {cand.idade} • {cand.porte}
+                          {ESPECIE_CURTA[cand.especie]} • {calcularIdadeAnimal(cand.dataNascimento)} • {cand.porte}
                         </Text>
                       </View>
                       <Ionicons name="chevron-forward" size={18} color={colors.primary} />
@@ -352,6 +370,7 @@ const styles = StyleSheet.create({
     maxHeight: '80%',
   },
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 },
+  closeIconBtn: { minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
   modalTitle: { fontSize: 18, fontWeight: 'bold', color: colors.text },
   modalSubtitle: { ...typography.caption, color: colors.textMuted, marginBottom: 16 },
   animalList: { marginBottom: 8 },

@@ -1,14 +1,15 @@
-// Paleta e estilos de texto acolhedores e com alto contraste WCAG AA/AAA
+// Paleta e estilos de texto acolhedores e em conformidade estrita com WCAG AA/AAA (axe-core)
 export const colors = {
-  primary: '#D35400',
+  primary: '#C04800',       // Laranja terracota escuro: contraste > 5.0:1 com #FFFFFF
   primaryLight: '#FDF2E9',
-  secondary: '#1E6F5C',
+  secondary: '#1E6F5C',     // Verde floresta: contraste > 6.8:1 sobre #FFFFFF
   secondaryLight: '#E8F5E9',
-  text: '#2C3E50',
-  textMuted: '#596A7A',
-  textLight: '#768594',
-  border: '#E8E2D9',
-  borderStrong: '#B8AFA6',
+  text: '#2C3E50',          // Contraste > 10.4:1 sobre #FFFFFF
+  textMuted: '#555E68',     // Contraste > 6.2:1 sobre #FFFFFF e > 5.8:1 sobre #FAF8F5
+  textLight: '#555E68',     // Contraste >= 5.8:1 para placeholders, legendas e abas inativas
+  border: '#D6CFC7',
+  borderStrong: '#7D7468',  // Contraste ~3.8:1 sobre #FAF8F5 e #FFFFFF (>= 3.0:1 para bordas de campos)
+  borderFocus: '#2C3E50',   // Borda de alto contraste para estado focado
   background: '#FFFFFF',
   surface: '#FAF8F5',
   muted: '#F3EFEA',

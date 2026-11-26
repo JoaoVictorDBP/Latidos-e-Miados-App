@@ -55,20 +55,26 @@ export default function PaymentScreen({ navigation, route }) {
         </View>
 
         <Text style={[typography.sectionTitle, styles.sectionTitle]}>Forma de pagamento</Text>
-        {FORMAS_PAGAMENTO.map((forma) => (
-          <RadioCard
-            key={forma.id}
-            title={forma.nome}
-            description={forma.id === 'boleto' ? forma.descricao + ' para ' + usuarioAtivo.email : forma.descricao}
-            selected={pagamento === forma.id}
-            onPress={() => setPagamento(forma.id)}
-          />
-        ))}
+        <View accessibilityRole="radiogroup">
+          {FORMAS_PAGAMENTO.map((forma) => {
+            const desc = forma.id === 'boleto' ? forma.descricao + ' para ' + usuarioAtivo.email : forma.descricao;
+            return (
+              <RadioCard
+                key={forma.id}
+                title={forma.nome}
+                description={desc}
+                selected={pagamento === forma.id}
+                onPress={() => setPagamento(forma.id)}
+                accessibilityLabel={forma.nome + ', ' + desc}
+              />
+            );
+          })}
+        </View>
 
         <Text style={styles.infoText}>Você pode alterar, pausar ou cancelar quando quiser, no seu perfil.</Text>
 
         {/* Link contextual de dúvidas sobre pagamentos (Item #12) */}
-        <TouchableOpacity style={styles.helpLink} onPress={() => navigation.navigate('Help')}>
+        <TouchableOpacity style={styles.helpLink} onPress={() => navigation.navigate('Help')} accessibilityRole="button" hitSlop={8}>
           <Ionicons name="help-circle-outline" size={16} color={colors.primary} />
           <Text style={styles.helpText}>Dúvidas sobre quando a cobrança ocorre e segurança? Saiba mais</Text>
         </TouchableOpacity>
@@ -105,7 +111,7 @@ const styles = StyleSheet.create({
   summarySubtitle: { fontSize: 14, color: colors.textMuted },
   sectionTitle: { marginBottom: 16 },
   infoText: { ...typography.caption, textAlign: 'center', marginTop: 16, color: colors.textMuted },
-  helpLink: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 12, paddingVertical: 6 },
+  helpLink: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 12, minHeight: 44, paddingVertical: 6 },
   helpText: { fontSize: 13, color: colors.primary, fontWeight: '600' },
   processorText: { ...typography.caption, textAlign: 'center', marginTop: 16, color: colors.textMuted },
   processor: { width: 169, height: 32, alignSelf: 'center', marginTop: 6, resizeMode: 'contain' },

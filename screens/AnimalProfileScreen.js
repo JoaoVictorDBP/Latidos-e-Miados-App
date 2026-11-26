@@ -17,7 +17,7 @@ import { useApadrinhamentos } from '../context/ApadrinhamentosContext';
 import { usePosts } from '../context/PostsContext';
 import { useAuth } from '../context/AuthContext';
 import { formatarReais } from '../utils/currency';
-import { extrairAno } from '../utils/date';
+import { calcularFaixaEtaria, calcularIdadeAnimal, extrairAno } from '../utils/date';
 import { pluralizar } from '../utils/text';
 import { colors, typography } from '../theme';
 
@@ -69,7 +69,7 @@ export default function AnimalProfileScreen({ navigation, route }) {
             {isMemorial ? <Tag label="Em memória" variant="muted" style={styles.tag} /> : null}
             {!isMemorial && apadrinhamento ? <Tag label="Seu afilhado" style={styles.tag} /> : null}
             <Tag label={animal.porte} variant="muted" style={styles.tag} />
-            <Tag label={animal.faixaEtaria} variant="muted" style={styles.tag} />
+            <Tag label={calcularFaixaEtaria(animal.dataNascimento, animal.dataFalecimento)} variant="muted" style={styles.tag} />
           </View>
 
           <Text style={typography.screenTitle}>{animal.nome}</Text>
@@ -80,7 +80,7 @@ export default function AnimalProfileScreen({ navigation, route }) {
             </Text>
           ) : (
             <Text style={styles.subtitle}>
-              {ESPECIE_CURTA[animal.especie]} • {animal.idade} • {pluralizar(animal.padrinhos, 'padrinho', 'padrinhos')}
+              {ESPECIE_CURTA[animal.especie]} • {calcularIdadeAnimal(animal.dataNascimento, animal.dataFalecimento)} • {pluralizar(animal.padrinhos, 'padrinho', 'padrinhos')}
             </Text>
           )}
 
@@ -212,10 +212,22 @@ export default function AnimalProfileScreen({ navigation, route }) {
       <Modal visible={modalLembrancaVisivel} transparent animationType="fade" onRequestClose={() => setModalLembrancaVisivel(false)}>
         <KeyboardAvoidingView style={styles.flex} behavior="padding">
           <Pressable style={styles.modalOverlay} onPress={() => setModalLembrancaVisivel(false)}>
-            <View style={styles.modalCard} onStartShouldSetResponder={() => true}>
+            <View
+              style={styles.modalCard}
+              onStartShouldSetResponder={() => true}
+              accessibilityViewIsModal={true}
+              role="dialog"
+              accessibilityLabel={'Deixar uma lembrança para ' + animal.nome}
+            >
               <View style={styles.modalHeader}>
                 <Text style={styles.modalTitle}>Deixar uma lembrança para {animal.nome}</Text>
-                <TouchableOpacity onPress={() => setModalLembrancaVisivel(false)} hitSlop={8}>
+                <TouchableOpacity
+                  style={styles.closeIconBtn}
+                  onPress={() => setModalLembrancaVisivel(false)}
+                  accessibilityRole="button"
+                  accessibilityLabel="Fechar janela"
+                  hitSlop={8}
+                >
                   <Ionicons name="close" size={22} color={colors.textMuted} />
                 </TouchableOpacity>
               </View>
@@ -315,7 +327,7 @@ const styles = StyleSheet.create({
   videoBadgeText: { color: colors.white, fontSize: 12, fontWeight: 'bold' },
   postText: { ...typography.body, marginBottom: 12, lineHeight: 20 },
   postFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderTopWidth: 1, borderTopColor: colors.border, paddingTop: 10 },
-  commentsButton: { flexDirection: 'row', alignItems: 'center', gap: 6, borderWidth: 1, borderColor: colors.borderStrong, borderRadius: 16, paddingHorizontal: 10, paddingVertical: 4 },
+  commentsButton: { flexDirection: 'row', alignItems: 'center', gap: 6, borderWidth: 1.5, borderColor: colors.borderStrong, borderRadius: 22, paddingHorizontal: 12, minHeight: 44 },
   comments: { color: colors.textMuted, fontSize: 13 },
 
   footer: { padding: 24, borderTopWidth: 1, borderTopColor: colors.border, alignItems: 'center', backgroundColor: colors.background },
@@ -325,6 +337,7 @@ const styles = StyleSheet.create({
   modalOverlay: { flex: 1, backgroundColor: colors.overlay, justifyContent: 'center', padding: 20 },
   modalCard: { backgroundColor: colors.background, borderRadius: 16, padding: 20 },
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
+  closeIconBtn: { minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
   modalTitle: { fontSize: 17, fontWeight: 'bold', color: colors.text, flex: 1, marginRight: 8 },
   textArea: { height: 100, textAlignVertical: 'top' },
   sendMemoryBtn: { marginTop: 16 },

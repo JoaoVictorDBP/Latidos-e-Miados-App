@@ -56,7 +56,14 @@ export default function PostScreen({ route }) {
         </ScrollView>
 
         <View style={styles.footer}>
-          <TextInput style={styles.input} placeholder="Escreva um comentário..." value={comentario} onChangeText={setComentario} multiline />
+          <TextInput
+            style={styles.input}
+            placeholder="Escreva um comentário..."
+            placeholderTextColor={colors.textLight}
+            value={comentario}
+            onChangeText={setComentario}
+            multiline
+          />
           <Button title="Enviar" size="small" disabled={!comentario.trim()} onPress={enviar} />
         </View>
       </KeyboardAvoidingView>

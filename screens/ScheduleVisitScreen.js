@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
   description: { ...typography.body, color: colors.textMuted, marginBottom: 8 },
   sectionTitle: { fontSize: 16, fontWeight: 'bold', color: colors.text, marginBottom: 12, marginTop: 16 },
   grid: { gap: 12 },
-  helpLink: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 24, paddingVertical: 8 },
+  helpLink: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 24, minHeight: 44, paddingVertical: 8 },
   helpText: { fontSize: 13, color: colors.primary, fontWeight: '600' },
   footer: { padding: 24 },
   hint: { ...typography.caption, textAlign: 'center', marginBottom: 8 },

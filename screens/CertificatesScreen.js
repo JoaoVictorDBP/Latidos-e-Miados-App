@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
   shareButton: { marginTop: 14, paddingHorizontal: 20 },
   statusRow: { flexDirection: 'row', alignItems: 'center', gap: 8, marginTop: 10 },
   endedDate: { ...typography.caption, color: colors.textMuted },
-  memorialLink: { marginTop: 10, paddingVertical: 4 },
+  memorialLink: { marginTop: 10, minHeight: 44, justifyContent: 'center', paddingHorizontal: 12 },
   memorialLinkText: { fontSize: 13, fontWeight: 'bold', color: colors.primary },
 
   infoBox: {
@@ -141,6 +141,6 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   infoBoxText: { flex: 1, fontSize: 12, color: colors.textMuted, lineHeight: 18 },
-  helpLink: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 20, paddingVertical: 8 },
+  helpLink: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, marginTop: 20, minHeight: 44, paddingVertical: 8 },
   helpText: { fontSize: 13, color: colors.primary, fontWeight: '600' },
 });
