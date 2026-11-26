@@ -1,13 +1,12 @@
 import React, { useRef, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import Animated, { FadeInDown } from 'react-native-reanimated';
 import Screen from '../components/Screen';
 import BackButton from '../components/BackButton';
 import Button from '../components/Button';
 import RadioCard from '../components/RadioCard';
 import CurrencyInput from '../components/CurrencyInput';
-import { buscarAnimal } from '../data/animais';
+import { useApadrinhamentos } from '../context/ApadrinhamentosContext';
 import { formatarReais, paraCentavos, VALOR_MINIMO_CENTAVOS } from '../utils/currency';
 import { colors, typography } from '../theme';
 
@@ -16,15 +15,17 @@ const VALORES = [
   { id: '20', centavos: 2000, desc: 'cobre a ração de uma semana' },
   { id: '50', centavos: 5000, desc: 'cobre 2 semanas de ração e o vermífugo do mês' },
   { id: '100', centavos: 10000, desc: 'cobre ração, remédios e vacinas' },
-  { id: 'outro', desc: '' },
+  { id: 'outro', desc: 'digite o valor desejado abaixo' },
 ];
 
 export default function DonationValueScreen({ navigation, route }) {
+  const { buscarAnimal } = useApadrinhamentos();
   const animal = buscarAnimal(route.params?.animalId ?? '1');
-  // Inicia sem pré-seleção forçada, exigindo escolha ativa (Item #19)
   const [selectedId, setSelectedId] = useState(null);
   const [outroValor, setOutroValor] = useState('');
   const scrollRef = useRef(null);
+
+  if (!animal) return null;
 
   const outroSelecionado = selectedId === 'outro';
   const itemSelecionado = VALORES.find((item) => item.id === selectedId);
@@ -33,7 +34,6 @@ export default function DonationValueScreen({ navigation, route }) {
     : itemSelecionado?.centavos ?? 0;
   const podeContinuar = selectedId !== null && valorCentavos >= VALOR_MINIMO_CENTAVOS;
 
-  // Mantém o campo de outro valor visível acima do teclado
   const rolarParaOutroValor = () => {
     if (outroSelecionado) scrollRef.current?.scrollToEnd({ animated: true });
   };
@@ -54,24 +54,42 @@ export default function DonationValueScreen({ navigation, route }) {
           <Text style={styles.title}>Quanto você quer doar por mês para {animal.nome}?</Text>
           <Text style={styles.subtitle}>Escolha uma das cotas mensais ou digite outro valor:</Text>
 
-          {VALORES.map((item) => (
-            <RadioCard
-              key={item.id}
-              title={item.centavos ? formatarReais(item.centavos) : 'Outro valor'}
-              description={item.desc}
-              selected={selectedId === item.id}
-              onPress={() => setSelectedId(item.id)}
-            >
-              {item.id === 'outro' && outroSelecionado ? (
-                <Animated.View entering={FadeInDown.duration(200)}>
-                  <CurrencyInput value={outroValor} onChangeText={setOutroValor} style={styles.outroValor} accessibilityLabel="Valor mensal da doação" />
-                </Animated.View>
-              ) : null}
-            </RadioCard>
-          ))}
+          {/* Grupo semântico de rádio sem controles interativos aninhados (P10 A2) */}
+          <View accessibilityRole="radiogroup">
+            {VALORES.map((item) => {
+              const titleText = item.centavos ? formatarReais(item.centavos) : 'Outro valor';
+              return (
+                <RadioCard
+                  key={item.id}
+                  title={titleText}
+                  description={item.desc}
+                  selected={selectedId === item.id}
+                  onPress={() => setSelectedId(item.id)}
+                  accessibilityLabel={item.desc ? titleText + ', ' + item.desc : titleText}
+                />
+              );
+            })}
+          </View>
 
-          {/* Link contextual para dúvidas (Item #12) */}
-          <TouchableOpacity style={styles.helpLink} onPress={() => navigation.navigate('Help')}>
+          {/* Campo separado (irmão) para evitar aninhamento de TextInput dentro de RadioCard */}
+          <View style={styles.outroValorBox}>
+            <CurrencyInput
+              value={outroValor}
+              onFocus={() => setSelectedId('outro')}
+              onChangeText={(texto) => {
+                setSelectedId('outro');
+                setOutroValor(texto);
+              }}
+              accessibilityLabel="Digite outro valor mensal em reais"
+            />
+          </View>
+
+          <TouchableOpacity
+            style={styles.helpLink}
+            onPress={() => navigation.navigate('Help')}
+            accessibilityRole="button"
+            hitSlop={8}
+          >
             <Ionicons name="help-circle-outline" size={18} color={colors.primary} />
             <Text style={styles.helpText}>Dúvidas sobre valores, pausa e cancelamento? Veja aqui</Text>
           </TouchableOpacity>
@@ -94,9 +112,9 @@ const styles = StyleSheet.create({
   content: { padding: 24, paddingBottom: 16 },
   title: { fontSize: 22, fontWeight: 'bold', color: colors.text, marginBottom: 8 },
   subtitle: { ...typography.body, color: colors.textMuted, marginBottom: 20 },
-  outroValor: { marginTop: 8 },
-  helpLink: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 16, paddingVertical: 8 },
-  helpText: { fontSize: 13, color: colors.primary, fontWeight: '600' },
+  outroValorBox: { marginTop: 4, marginBottom: 8 },
+  helpLink: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 12, minHeight: 44, paddingVertical: 8 },
+  helpText: { fontSize: 13, color: colors.primary, fontWeight: '600', flex: 1 },
   footer: { padding: 24 },
   hint: { ...typography.caption, textAlign: 'center', color: colors.textMuted, marginBottom: 8 },
 });

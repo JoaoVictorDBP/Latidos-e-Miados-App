@@ -48,7 +48,12 @@ export default function NotificationsScreen({ navigation }) {
       <ScreenHeader
         title="Notificações"
         right={
-          <TouchableOpacity onPress={() => navigation.navigate('NotificationSettings')} accessibilityLabel="Configurar notificações">
+          <TouchableOpacity
+            style={styles.settingsBtn}
+            onPress={() => navigation.navigate('NotificationSettings')}
+            accessibilityRole="button"
+            accessibilityLabel="Configurar notificações"
+          >
             <Ionicons name="settings-outline" size={24} color={colors.text} />
           </TouchableOpacity>
         }
@@ -100,6 +105,7 @@ export default function NotificationsScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
+  settingsBtn: { minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
   filterContainer: { paddingHorizontal: 16, paddingTop: 12, paddingBottom: 4 },
   content: { padding: 16 },
   empty: { ...typography.body, color: colors.textMuted, textAlign: 'center', marginTop: 32 },

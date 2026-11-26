@@ -166,7 +166,7 @@ export default function ManageSponsorshipScreen({ navigation, route }) {
           <Text style={[styles.status, (apadrinhamento.pausadoAte || isMemorialPendente) && styles.statusPausado]}>{status}</Text>
 
           <Text style={styles.sectionLabel}>Alterar valor mensal</Text>
-          <ChipGroup options={VALORES} selected={valor} onSelect={alterando(setValor)} getLabel={rotuloValor} style={styles.chips} />
+          <ChipGroup options={VALORES} selected={valor} onSelect={alterando(setValor)} getLabel={rotuloValor} radio style={styles.chips} />
 
           {valor === 'outro' ? (
             <Animated.View style={styles.outroBox} entering={FadeInDown.duration(200)} onLayout={(evento) => { outroY.current = evento.nativeEvent.layout.y; }}>
@@ -182,7 +182,7 @@ export default function ManageSponsorshipScreen({ navigation, route }) {
           ) : null}
 
           <Text style={styles.sectionLabel}>Forma de pagamento</Text>
-          <ChipGroup options={FORMAS_PAGAMENTO.map((forma) => forma.id)} selected={pagamento} onSelect={alterando(setPagamento)} getLabel={nomePagamento} />
+          <ChipGroup options={FORMAS_PAGAMENTO.map((forma) => forma.id)} selected={pagamento} onSelect={alterando(setPagamento)} getLabel={nomePagamento} radio />
           <Text style={styles.paymentHelp}>
             {FORMAS_PAGAMENTO.find((forma) => forma.id === pagamento).descricao}
             {trocouPagamento ? '. Ao salvar, você autoriza o novo meio de pagamento pelo Mercado Pago.' : ''}

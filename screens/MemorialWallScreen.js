@@ -170,10 +170,22 @@ export default function MemorialWallScreen({ navigation, route }) {
       <Modal visible={modalLembranca} transparent animationType="fade" onRequestClose={() => setModalLembranca(false)}>
         <KeyboardAvoidingView style={styles.flex} behavior="padding">
           <Pressable style={styles.modalOverlay} onPress={() => setModalLembranca(false)}>
-            <View style={styles.modalCard} onStartShouldSetResponder={() => true}>
+            <View
+              style={styles.modalCard}
+              onStartShouldSetResponder={() => true}
+              accessibilityViewIsModal={true}
+              role="dialog"
+              accessibilityLabel={'Lembrança para ' + (animalAtual?.nome ?? '')}
+            >
               <View style={styles.modalHeader}>
                 <Text style={styles.modalTitle}>Lembrança para {animalAtual?.nome}</Text>
-                <TouchableOpacity onPress={() => setModalLembranca(false)} hitSlop={8}>
+                <TouchableOpacity
+                  style={styles.closeIconBtn}
+                  onPress={() => setModalLembranca(false)}
+                  accessibilityRole="button"
+                  accessibilityLabel="Fechar janela"
+                  hitSlop={8}
+                >
                   <Ionicons name="close" size={22} color={colors.textMuted} />
                 </TouchableOpacity>
               </View>
@@ -231,7 +243,7 @@ const styles = StyleSheet.create({
   },
   petName: { fontSize: 14, fontWeight: 'bold', color: colors.text },
   petNameActive: { color: colors.primary },
-  petPeriod: { fontSize: 11, color: colors.textMuted, marginTop: 2 },
+  petPeriod: { fontSize: 12, color: colors.textMuted, marginTop: 2 },
 
   memoriesSection: { marginTop: 24 },
   ongQuoteCard: {
@@ -283,7 +295,7 @@ const styles = StyleSheet.create({
   videoBadgeText: { color: colors.white, fontSize: 12, fontWeight: 'bold' },
   postText: { ...typography.body, marginBottom: 12, lineHeight: 20 },
   postFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderTopWidth: 1, borderTopColor: colors.border, paddingTop: 10 },
-  commentsButton: { flexDirection: 'row', alignItems: 'center', gap: 6, borderWidth: 1, borderColor: colors.borderStrong, borderRadius: 16, paddingHorizontal: 10, paddingVertical: 4 },
+  commentsButton: { flexDirection: 'row', alignItems: 'center', gap: 6, borderWidth: 1.5, borderColor: colors.borderStrong, borderRadius: 22, paddingHorizontal: 12, minHeight: 44 },
   comments: { color: colors.textMuted, fontSize: 13 },
 
   footer: { padding: 16, borderTopWidth: 1, borderTopColor: colors.border, backgroundColor: colors.background },
@@ -291,6 +303,7 @@ const styles = StyleSheet.create({
   modalOverlay: { flex: 1, backgroundColor: colors.overlay, justifyContent: 'center', padding: 20 },
   modalCard: { backgroundColor: colors.background, borderRadius: 16, padding: 20 },
   modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
+  closeIconBtn: { minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
   modalTitle: { fontSize: 17, fontWeight: 'bold', color: colors.text },
   textArea: { height: 100, textAlignVertical: 'top' },
   sendBtn: { marginTop: 16 },

@@ -38,12 +38,24 @@ export default function MarkDeceasedModal({ visible, animal, onConfirm, onClose 
     <Modal visible={visible} transparent animationType="fade" statusBarTranslucent onRequestClose={onClose}>
       <KeyboardAvoidingView style={styles.flex} behavior="padding">
         <Pressable style={styles.overlay} onPress={onClose}>
-          <View style={styles.card} onStartShouldSetResponder={() => true}>
+          <View
+            style={styles.card}
+            onStartShouldSetResponder={() => true}
+            accessibilityViewIsModal={true}
+            role="dialog"
+            accessibilityLabel={'Marcar ' + animal.nome + ' como falecido?'}
+          >
             <View style={styles.header}>
               <View style={styles.iconBadge}>
                 <Ionicons name="heart-outline" size={22} color={colors.danger} />
               </View>
-              <TouchableOpacity onPress={onClose} accessibilityLabel="Fechar" hitSlop={8}>
+              <TouchableOpacity
+                style={styles.closeIconBtn}
+                onPress={onClose}
+                accessibilityRole="button"
+                accessibilityLabel="Fechar janela"
+                hitSlop={8}
+              >
                 <Ionicons name="close" size={22} color={colors.textMuted} />
               </TouchableOpacity>
             </View>
@@ -110,6 +122,7 @@ const styles = StyleSheet.create({
     maxHeight: '90%',
   },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 },
+  closeIconBtn: { minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
   iconBadge: {
     width: 40,
     height: 40,

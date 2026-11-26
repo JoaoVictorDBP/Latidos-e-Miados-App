@@ -21,13 +21,25 @@ export default function EventDetailModal({ visible, evento, onClose }) {
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <Pressable style={styles.overlay} onPress={onClose}>
-        <View style={styles.card} onStartShouldSetResponder={() => true}>
+        <View
+          style={styles.card}
+          onStartShouldSetResponder={() => true}
+          accessibilityViewIsModal={true}
+          role="dialog"
+          accessibilityLabel={evento.titulo}
+        >
           <View style={styles.header}>
             <View style={styles.titleRow}>
               <Ionicons name="calendar-outline" size={22} color={colors.primary} />
               <Text style={styles.headerTitle}>Prestação de Contas do Evento</Text>
             </View>
-            <TouchableOpacity onPress={onClose} accessibilityLabel="Fechar" hitSlop={8}>
+            <TouchableOpacity
+              style={styles.closeIconBtn}
+              onPress={onClose}
+              accessibilityRole="button"
+              accessibilityLabel="Fechar janela"
+              hitSlop={8}
+            >
               <Ionicons name="close" size={22} color={colors.textMuted} />
             </TouchableOpacity>
           </View>
@@ -62,6 +74,7 @@ const styles = StyleSheet.create({
   overlay: { flex: 1, backgroundColor: colors.overlay, justifyContent: 'center', padding: 20 },
   card: { backgroundColor: colors.background, borderRadius: 16, padding: 20, maxHeight: '85%' },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
+  closeIconBtn: { minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
   titleRow: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   headerTitle: { fontSize: 17, fontWeight: 'bold', color: colors.text },
   scroll: { marginBottom: 16 },

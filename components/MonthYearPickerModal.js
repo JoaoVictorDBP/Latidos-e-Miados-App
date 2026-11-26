@@ -9,10 +9,22 @@ export default function MonthYearPickerModal({ visible, periodos, selecionado, o
   return (
     <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
       <Pressable style={styles.overlay} onPress={onClose}>
-        <View style={styles.card} onStartShouldSetResponder={() => true}>
+        <View
+          style={styles.card}
+          onStartShouldSetResponder={() => true}
+          accessibilityViewIsModal={true}
+          role="dialog"
+          accessibilityLabel="Selecionar período"
+        >
           <View style={styles.header}>
             <Text style={styles.title}>Selecionar período</Text>
-            <TouchableOpacity onPress={onClose} accessibilityLabel="Fechar" hitSlop={8}>
+            <TouchableOpacity
+              style={styles.closeIconBtn}
+              onPress={onClose}
+              accessibilityRole="button"
+              accessibilityLabel="Fechar janela"
+              hitSlop={8}
+            >
               <Ionicons name="close" size={22} color={colors.textMuted} />
             </TouchableOpacity>
           </View>
@@ -55,6 +67,7 @@ const styles = StyleSheet.create({
   overlay: { flex: 1, backgroundColor: colors.overlay, justifyContent: 'center', padding: 24 },
   card: { backgroundColor: colors.background, borderRadius: 16, padding: 24 },
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 },
+  closeIconBtn: { minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
   title: { fontSize: 18, fontWeight: 'bold', color: colors.text },
   subtitle: { ...typography.caption, color: colors.textMuted, marginBottom: 16 },
   list: { gap: 8, marginBottom: 20 },

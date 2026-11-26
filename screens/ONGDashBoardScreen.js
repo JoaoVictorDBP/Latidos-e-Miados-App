@@ -6,6 +6,7 @@ import Button from '../components/Button';
 import Tag from '../components/Tag';
 import ONGTabBar from '../components/ONGTabBar';
 import { useApadrinhamentos } from '../context/ApadrinhamentosContext';
+import { calcularIdadeAnimal } from '../utils/date';
 import { pluralizar } from '../utils/text';
 import { colors, typography } from '../theme';
 
@@ -63,7 +64,7 @@ export default function ONGDashboardScreen({ navigation }) {
                 <Text style={styles.animalStatus}>
                   {isMemorial
                     ? 'Em memória desde ' + (animal.dataFalecimento ?? animal.anoEntrada)
-                    : pluralizar(animal.padrinhos, 'padrinho', 'padrinhos') + ' • último post há ' + pluralizar(animal.diasSemPost, 'dia', 'dias')}
+                    : calcularIdadeAnimal(animal.dataNascimento) + ' • ' + pluralizar(animal.padrinhos, 'padrinho', 'padrinhos') + ' • último post há ' + pluralizar(animal.diasSemPost, 'dia', 'dias')}
                 </Text>
               </View>
               <Ionicons name="chevron-forward" size={24} color={colors.borderStrong} />

@@ -1,7 +1,8 @@
 import React from 'react';
+import { View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator, BottomTabBar } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
@@ -74,13 +75,29 @@ const TELAS = {
 
 function MainTabs() {
   return (
-    <Tab.Navigator screenOptions={{ headerShown: false, tabBarActiveTintColor: colors.primary, tabBarInactiveTintColor: colors.textLight }}>
+    <Tab.Navigator
+      tabBar={(props) => (
+        <View accessibilityRole="tablist">
+          <BottomTabBar {...props} />
+        </View>
+      )}
+      screenOptions={{
+        headerShown: false,
+        tabBarActiveTintColor: colors.primary,
+        tabBarInactiveTintColor: colors.textLight,
+        tabBarLabelStyle: { fontSize: 12 },
+      }}
+    >
       {ABAS.map((aba) => (
         <Tab.Screen
           key={aba.name}
           name={aba.name}
           component={aba.component}
-          options={{ tabBarLabel: aba.titulo, tabBarIcon: ({ color, size }) => <Ionicons name={aba.icone} color={color} size={size} /> }}
+          options={{
+            tabBarLabel: aba.titulo,
+            tabBarAccessibilityLabel: aba.titulo,
+            tabBarIcon: ({ color, size }) => <Ionicons name={aba.icone} color={color} size={size} />,
+          }}
         />
       ))}
     </Tab.Navigator>

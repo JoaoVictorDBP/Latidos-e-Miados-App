@@ -61,7 +61,9 @@ export default function FeedScreen({ navigation, route }) {
       <View style={styles.header}>
         <Text style={[typography.pageTitle, styles.title]}>Meus afilhados</Text>
         <TouchableOpacity
+          style={styles.bellButton}
           onPress={() => navigation.navigate('Notifications')}
+          accessibilityRole="button"
           accessibilityLabel={naoLidas ? 'Notificações, ' + naoLidas + ' novas' : 'Notificações'}
         >
           <Ionicons name="notifications-outline" size={26} color={colors.text} />
@@ -168,18 +170,20 @@ export default function FeedScreen({ navigation, route }) {
 const styles = StyleSheet.create({
   header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 16, paddingTop: 8 },
   title: { marginBottom: 0 },
+  bellButton: { minWidth: 44, minHeight: 44, alignItems: 'center', justifyContent: 'center' },
   badge: {
     position: 'absolute',
-    top: -4,
-    right: -6,
+    top: 2,
+    right: 2,
     backgroundColor: colors.primary,
-    borderRadius: 8,
-    minWidth: 16,
-    height: 16,
+    borderRadius: 9,
+    minWidth: 18,
+    height: 18,
+    paddingHorizontal: 4,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  badgeText: { color: colors.white, fontSize: 10, fontWeight: 'bold' },
+  badgeText: { color: colors.white, fontSize: 12, fontWeight: 'bold' },
 
   filters: { paddingHorizontal: 16, marginTop: 12, marginBottom: 8 },
   categoryFilters: { paddingHorizontal: 16, marginBottom: 12 },
@@ -188,7 +192,7 @@ const styles = StyleSheet.create({
   feedContent: { paddingHorizontal: 16, paddingBottom: 24 },
   emptyContainer: { alignItems: 'center', justifyContent: 'center', marginTop: 40, gap: 8 },
   empty: { ...typography.body, color: colors.textMuted, textAlign: 'center', paddingHorizontal: 20 },
-  clearFilterBtn: { marginTop: 8 },
+  clearFilterBtn: { marginTop: 8, minHeight: 44, justifyContent: 'center', paddingHorizontal: 12 },
   clearFilterText: { color: colors.primary, fontWeight: 'bold', fontSize: 13 },
 
   postCard: {
@@ -215,6 +219,6 @@ const styles = StyleSheet.create({
   videoBadgeText: { color: colors.white, fontSize: 12, fontWeight: 'bold' },
   postText: { ...typography.body, marginBottom: 12, lineHeight: 20 },
   postFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderTopWidth: 1, borderTopColor: colors.border, paddingTop: 10 },
-  commentsButton: { flexDirection: 'row', alignItems: 'center', gap: 6, borderWidth: 1, borderColor: colors.borderStrong, borderRadius: 16, paddingHorizontal: 10, paddingVertical: 4 },
+  commentsButton: { flexDirection: 'row', alignItems: 'center', gap: 6, borderWidth: 1.5, borderColor: colors.borderStrong, borderRadius: 22, paddingHorizontal: 12, minHeight: 44 },
   comments: { color: colors.textMuted, fontSize: 13 },
 });

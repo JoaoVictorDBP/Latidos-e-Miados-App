@@ -104,6 +104,7 @@ export default function ONGNewPostScreen({ navigation, route }) {
             style={styles.input}
             multiline
             placeholder="Ex.: 'tomando sol depois do almoço'"
+            placeholderTextColor={colors.textLight}
             value={legenda}
             onChangeText={setLegenda}
             onFocus={() => setLegendaFocada(true)}
@@ -126,7 +127,7 @@ export default function ONGNewPostScreen({ navigation, route }) {
 
 const styles = StyleSheet.create({
   label: { ...ongFormStyles.label, marginTop: 16 },
-  attachButton: { backgroundColor: colors.surface, borderWidth: 1, borderColor: '#ddd', borderStyle: 'dashed', borderRadius: 12, padding: 24, alignItems: 'center' },
+  attachButton: { backgroundColor: colors.surface, borderWidth: 1.5, borderColor: colors.borderStrong, borderStyle: 'dashed', borderRadius: 12, padding: 24, alignItems: 'center' },
   attachIcon: { marginBottom: 4 },
   attachText: { color: colors.textMuted },
   attachmentPreview: { borderRadius: 12, overflow: 'hidden' },

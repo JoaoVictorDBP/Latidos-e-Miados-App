@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { colors } from '../theme';
 
-// Botão redondo flutuando sobre a foto do topo, abaixo da barra de status
+// Botão redondo flutuando sobre a foto do topo com área mínima de toque 44x44
 export default function OverlayButton({ icon = 'arrow-back', dark = false, onPress, accessibilityLabel = 'Voltar' }) {
   const navigation = useNavigation();
   const insets = useSafeAreaInsets();
@@ -16,6 +16,7 @@ export default function OverlayButton({ icon = 'arrow-back', dark = false, onPre
       onPress={onPress ?? navigation.goBack}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
+      hitSlop={8}
     >
       <Ionicons name={icon} size={dark ? 22 : 24} color={dark ? colors.white : colors.text} />
     </TouchableOpacity>
@@ -23,7 +24,7 @@ export default function OverlayButton({ icon = 'arrow-back', dark = false, onPre
 }
 
 const styles = StyleSheet.create({
-  button: { position: 'absolute', left: 16, borderRadius: 20, width: 40, height: 40, alignItems: 'center', justifyContent: 'center' },
-  light: { backgroundColor: 'rgba(255,255,255,0.7)' },
+  button: { position: 'absolute', left: 16, borderRadius: 22, width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
+  light: { backgroundColor: 'rgba(255,255,255,0.85)' },
   dark: { backgroundColor: colors.overlay },
 });
